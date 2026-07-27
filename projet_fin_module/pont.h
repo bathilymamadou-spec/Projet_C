@@ -1,6 +1,0 @@
-#ifndef PONT_H_INCLUDED
-#define PONT_H_INCLUDED
-
-
-
-#endif // PONT_H_INCLUDED
