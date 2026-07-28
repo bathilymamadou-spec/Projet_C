@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1785224891 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/main.c
+	<stdio.h>
+	<stdlib.h>
+
