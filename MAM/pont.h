@@ -7,6 +7,11 @@ typedef enum{
     CHARGE
 }Type_capteur;
 
+typedef enum{
+    OK=1,
+    JAUNE,
+    ROUGE
+};
 
 typedef struct {
 char id[6]; /* ex: "C01", "C15" */

@@ -77,12 +77,15 @@ IndiceHealthStructural *sante){
    sante->score_charge = calculer_score_charge(capteurs, n);
    //calcul indice SHI global
    sante->indice_global = (sante->score_deformation*0.4 + sante->score_vibration*0.35 + sante->score_charge*0.25);
+
+   //Affichage complet
     printf("RESUME DE SANTE STRUCTURALE\n");
     printf("Indice global(SHI) \t\t:%f/ 100\n", sante->indice_global);
     printf("\t Score deformation \t: %f/ 100\n", sante->score_deformation);
     printf("\t Score vibration \t: %f/ 100\n", sante->score_vibration);
     printf("\t Score charge \t: %f/ 100\n", sante->score_charge);
 
+//Affichage de l'Etat et de la reco selon la valeur du SHI
     if (sante->indice_global == 100){
         printf("Etat général \t\t: EXCELLENT\n");
         printf("Recommandation \t\t: Aucune alerte\n");
