@@ -3,18 +3,7 @@
 #include <pont.h>
 
 
-void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
-    for (int i = 0; i < n; i++){
-        if (strcmp(capteurs[i].type, "CHARGE") == 0){
-            float r = (capteurs[i].valeur_mesuree/capteurs[i].valeur_nominale)*100;
-            if (r >= 80.0){
-                capteurs[i].etat = 2;
-                strcpy(capteurs[i].remarque, "etat jaune, utilisation de plus de 80% de la capacité")
-            }
 
-        }
-    }
-}
 
 void trier_capteurs_par_type(Capteur capteurs[], int n){
     for (int i = 0; i < n-1; i++){
@@ -55,12 +44,4 @@ void afficher_menu(){
     scanf("%d", &choix)
 }
 
-int valider_capteur(Capteur *cap){
-    if (strcmp(cap->type, "DEFORM")==0){
-        if (cap->valeur_mesuree -300 || cap->valeur_mesuree 300){
-            return 0;
-        }
-    }
-
-}
 
