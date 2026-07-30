@@ -10,9 +10,9 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
             if (div >= 0.80) {
                 capteurs[i].etat = 2;
                 strcpy(capteurs[i].remarque, "Alerte JAUNE: Utilisation de plus de 80% de la capacité");
-                alertes[(*nb_alr)++] = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", , capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
+                Alertes alertes alertes[(*nb_alr)++] = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", , capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
             }
-            else if (ratio >= 0.90) {
+            else if (div >= 0.90) {
                 capteurs[i].etat = 3;
                 strcpy(capteurs[i].remarque, "Alerte ROUGE: Utilisation de plus de 90% de la capacité)");
                 Alertes alertes[(*nb_alr)++] = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"};
