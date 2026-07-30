@@ -1,3 +1,4 @@
+
 #ifndef PONT_H_INCLUDED
 #define PONT_H_INCLUDED
 
@@ -28,20 +29,14 @@ char remarque[100]; /* description alert */
 
 
 typedef struct {
-char horodatage[20];
-int num_capteur;
-char type_alerte[30];
-char niveau[10];
+char horodatage[20]; /* "JJ/MM/AAAA HH:MM" */
+int num_capteur;     /* index 0-23 */
+char type_alerte[30]; /* "DEFORMATION", "VIBRATION", "SURCHARGE" */
+char niveau[10];     /* "JAUNE", "ROUGE" */
 float valeur;
 float seuil;
-char action[100];
+char action[100];   /* action recommandée */
 } Alerte;
-/* "JJ/MM/AAAA HH:MM" */
-/* index 0-23 */
-/* "DEFORMATION", "VIBRATION", "SURCHARGE" */
-/* "JAUNE", "ROUGE" */
-/* action recommandée */
-
 
 typedef struct {
 float indice_global; /* SHI global 0-100 */
@@ -51,7 +46,6 @@ float score_charge; /* composante charge */
 int nb_alertes_jaunes;
 int nb_alertes_rouges;
 char diagnostic[100];  /* "EXCELLENT", "BON", "ALERTE", "CRITIQUE" */
-
 char recommandation[200];/* action prioritaire */
 } IndiceHealthStructural;
 
@@ -66,19 +60,6 @@ int conformite_eurocode; /* 1=OUI, 0=NON */
 } RapportInspection;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 float calculer_score_deformation(Capteur capteurs[], int n);
 float calculer_score_vibration(Capteur capteurs[], int n);
 float calculer_score_charge(Capteur capteurs[], int n);
@@ -86,3 +67,4 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
 IndiceHealthStructural *sante);
 
 #endif // PONT_H_INCLUDED
+

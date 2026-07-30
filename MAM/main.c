@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "pont.h"
@@ -43,3 +44,4 @@ Capteur capteurs[NB_CAPTEURS] = {
 };
     return 0;
 }
+
