@@ -1,10 +1,11 @@
 # depslib dependency file v1.0
-1785437544 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/main.c
+1785441478 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/main.c
 	<stdio.h>
 	<stdlib.h>
+	<string.h>
 	"pont.h"
 
-1785440074 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.c
+1785444151 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
