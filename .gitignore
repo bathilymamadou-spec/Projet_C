@@ -54,5 +54,5 @@ dkms.conf
 # debug information files
 *.dwo
 
-*.layout
-*.depend
+MAM/*.layout
+MAM/*.depend
