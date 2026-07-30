@@ -3,6 +3,8 @@
 #include <pont.h>
 
 
+
+
 void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr) {
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "CHARGE") == 0) {
