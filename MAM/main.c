@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,9 +6,11 @@
 #define NB_CAPTEURS 24
 #define NB_ALERTES_MAX 50
 
-int main() {
-    // tableau des 24 capteurs
-    Capteur capteurs[NB_CAPTEURS] = {
+
+int main()
+{
+// tableau des 24 capteurs
+Capteur capteurs[NB_CAPTEURS] = {
     // 4 capteurs de déformation piles
     {"C01", "Pile Nord", "DEFORM", 125.3, 120.1, 150.0, 200.0, 150.0, OK, ""},
     {"C02", "Pile Centre 1", "DEFORM", 98.5, 95.0, 150.0, 200.0, 150.0, OK, ""},
@@ -30,7 +33,7 @@ int main() {
     {"C15", "Noeud 7", "VIBR", 0.43, 0.42, 0.50, 0.60, 0.425, OK, ""},
     {"C16", "Noeud 8", "VIBR", 0.41, 0.40, 0.50, 0.60, 0.425, OK, ""},
 
-    // 8 capteurs de charge
+    // 8 capteurs de charge (4 piles + 4 appuis)
     {"C17", "Pile Nord", "CHARGE", 2450.0, 2400.0, 2400.0, 2700.0, 3000.0, OK, ""},
     {"C18", "Pile Centre 1", "CHARGE", 2380.0, 2350.0, 2400.0, 2700.0, 3000.0, OK, ""},
     {"C19", "Pile Centre 2", "CHARGE", 2410.0, 2380.0, 2400.0, 2700.0, 3000.0, JAUNE, "Alerte jaune"},
@@ -40,19 +43,20 @@ int main() {
     {"C23", "Appui Sud", "CHARGE", 1210.0, 1190.0, 1200.0, 1350.0, 1500.0, JAUNE, "Alerte jaune"},
     {"C24", "Appui Extreme", "CHARGE", 1195.0, 1175.0, 1200.0, 1350.0, 1500.0, OK, ""}
 };
-    Alerte alertes[] = {
-        {"27/07/2026 10:00", 1, "SURCHARGE", "ROUGE", capteurs[1].valeur_mesuree,
-         capteurs[1].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"},
-        {"27/07/2026 10:00", 2, "SURCHARGE", "ROUGE", capteurs[2].valeur_mesuree,
-         capteurs[2].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"}
-    };
 
-    calculer_score_deformation(capteurs, NB_CAPTEURS);
-    calculer_score_vibration(capteurs, NB_CAPTEURS);
-    calculer_score_charge(capteurs, NB_CAPTEURS);
+Alerte alertes[] ={ {"27/07/2026 10:00", 1, "SURCHARGE", "ROUGE", capteurs[1].valeur_mesuree,
+                    capteurs[1].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"},
+                     {"27/07/2026 10:00", 2, "SURCHARGE", "ROUGE", capteurs[2].valeur_mesuree,
+                    capteurs[2].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"}
 
-    IndiceHealthStructural sante;
-    calculer_indice_sante(capteurs, NB_CAPTEURS, alertes, 2, &sante);
+};
+
+calculer_score_deformation(capteurs, NB_CAPTEURS);
+calculer_score_vibration(capteurs, NB_CAPTEURS);
+calculer_score_charge(capteurs, NB_CAPTEURS);
+
+IndiceHealthStructural sante;
+calculer_indice_sante(capteurs, NB_CAPTEURS,alertes,  2, &sante);
 
     return 0;
 }
