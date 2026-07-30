@@ -13,7 +13,7 @@ typedef enum{
     ROUGE
 };
 
-typedef struct {
+typedef struct{
 char id[6]; /* ex: "C01", "C15" */
 char nom[40]; /* ex: "Pile Nord" */
 char type[15]; /* "DEFORM", "VIBR", "CHARGE" */
