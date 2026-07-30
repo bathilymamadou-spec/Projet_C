@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "pont.h"
 #define NB_CAPTEURS 24
 #define NB_ALERTES_MAX 50
@@ -59,4 +60,3 @@ calculer_indice_sante(capteurs, NB_CAPTEURS,alertes,  2, &sante);
 
     return 0;
 }
-

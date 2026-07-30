@@ -1,6 +1,10 @@
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <pont.h>
+#include <string.h>
+#include "pont.h"
+
+
 
 
 void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr) {
@@ -10,12 +14,14 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
             if (div >= 0.80) {
                 capteurs[i].etat = 2;
                 strcpy(capteurs[i].remarque, "Alerte JAUNE: Utilisation de plus de 80% de la capacit�");
-                Alertes alertes alertes[(*nb_alr)++] = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", , capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
+                Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
+                alertes[(*nb_alr)++]=alerts;
             }
             else if (div >= 0.90) {
                 capteurs[i].etat = 3;
                 strcpy(capteurs[i].remarque, "Alerte ROUGE: Utilisation de plus de 90% de la capacit�)");
-                Alertes alertes[(*nb_alr)++] = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"};
+                Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"};
+                alertes[(*nb_alr)++]=alerts;
             }
         }
     }
@@ -155,6 +161,7 @@ Capteur* recherche_capteur_critique(Capteur capteurs[], int n){
 }
 
 void afficher_menu(){
+    int choix = 0;
     printf("\n=== SUIVI STRUCTURALE PONT FAIDHERBE ===\n");
     printf("1. Charger donn�es de mesure\n");
     printf("2. Valider tous les capteurs\n");
@@ -165,7 +172,8 @@ void afficher_menu(){
     printf("7. Exporter rapport r�glementaire (Eurocode)\n");
     printf("8. Afficher alertes actives\n");
     printf("9. Quitter\n");
-    printf("Entrer votre choix\n")
-    scanf("%d", &choix)
+    printf("Entrer votre choix\n");
+    scanf("%d", &choix);
 }
+
 
