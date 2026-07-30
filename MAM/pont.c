@@ -42,7 +42,7 @@ float calculer_score_deformation(Capteur capteurs[], int n) {
                 ecart = capteurs[i].valeur_mesuree - capteurs[i].valeur_nominale;
                  somme_travee += ecart;
             }
-            max += 150;
+            max += 200;
         }
     }
     float somme_ponderee = (somme_pile*0.7 +somme_travee*0.3); //somme des écarts pondérés selon importance
@@ -69,7 +69,7 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
         }
     }
     return 100 - ((somme / max)*100); //Formule du SHI
-}
+};
 
 // Calcul du score de charge avec le pourcentage d'utilisation
 float calculer_score_charge(Capteur capteurs[], int n){
@@ -89,7 +89,8 @@ float calculer_score_charge(Capteur capteurs[], int n){
     if (max == 0)
         return 0;
     return 100 - ((somme / max)*100); //Formule du SHI
-}
+};
+
 void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr,
 IndiceHealthStructural *sante){
    sante->score_deformation = calculer_score_deformation(capteurs, n);
