@@ -1,28 +1,47 @@
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> //pour utiliser strcmp, strcpy, strstr
 #include "pont.h"
 
 
-
-
+//Détecte surcharges (> 80% capacité = jaune, > 90% = rouge), déséquilibre entre piles.
 void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr) {
+    float charge_nord = -1.0, charge_sud = -1.0;
+    int idx_nord = -1;
+    // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
     for (int i = 0; i < n; i++) {
-        if (strcmp(capteurs[i].type, "CHARGE") == 0) {
-            float div = capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale;
+        if (strcmp(capteurs[i].type, "CHARGE") == 0) { //permet de comparer les chaines de caractères
+            float div = capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale;//représente le ratio
             if (div >= 0.80) {
                 capteurs[i].etat = 2;
-                strcpy(capteurs[i].remarque, "Alerte JAUNE: Utilisation de plus de 80% de la capacit�");
+                strcpy(capteurs[i].remarque, "Alerte JAUNE: Utilisation de plus de 80% de la capacite");
                 Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
-                alertes[(*nb_alr)++]=alerts;
+                alertes[(*nb_alr)++]=alerts;//on initialise un tableau d'alertes
             }
             else if (div >= 0.90) {
                 capteurs[i].etat = 3;
-                strcpy(capteurs[i].remarque, "Alerte ROUGE: Utilisation de plus de 90% de la capacit�)");
-                Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"};
+                strcpy(capteurs[i].remarque, "Alerte ROUGE: Utilisation de plus de 90% de la capacite)"); //permet de copier le texte dans la remarque
+                Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermer la circulation aux Poids-Lourds"};
                 alertes[(*nb_alr)++]=alerts;
             }
+        }
+        // ÉTAPE 2 : Détection du déséquilibre entre les piles (Analyse globale)
+            // Récupération des charges aux deux extrémités (Pile Nord vs Pile Sud)
+            if (strstr(capteurs[i].nom, "Pile Nord") != NULL) {
+                charge_nord = capteurs[i].valeur_mesuree;
+                idx_nord = i;
+            }
+            if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
+                charge_sud = capteurs[i].valeur_mesuree;
+            }
+        }
+    // Calcul du déséquilibre entre les deux piles
+    if (charge_nord != -1.0 && charge_sud != -1.0) {
+        float ecart = charge_nord - charge_sud;
+        if (ecart < 0) ecart = -ecart; // Valeur absolue
+        if (ecart > 100.0) {
+            Alerte al_desequilibre = {"27/07/2026 10:00", idx_nord, "SURCHARGE", "JAUNE", ecart, 100.0, "Desequilibre important de charge entre Pile Nord et Pile Sud"};
+            alertes[(*nb_alr)++] = al_desequilibre;
         }
     }
 }
@@ -136,6 +155,7 @@ IndiceHealthStructural *sante){
 
 };
 
+//Recherche séquentielle du capteur avec l'état le plus grave (ROUGE prioritaire). Retourne pointeur ou NULL
 void trier_capteurs_par_type(Capteur capteurs[], int n){
     for (int i = 0; i < n-1; i++){
         for (int j = i+1; j < n; j++){
@@ -148,6 +168,7 @@ void trier_capteurs_par_type(Capteur capteurs[], int n){
     }
 }
 
+//Tri à bulles groupant capteurs par type (DEFORM, VIBR, CHARGE).
 Capteur* recherche_capteur_critique(Capteur capteurs[], int n){
     Capteur *pointeur = NULL;
     int max=1;
@@ -160,16 +181,17 @@ Capteur* recherche_capteur_critique(Capteur capteurs[], int n){
     return pointeur;
 }
 
+//Affiche le menu principal
 void afficher_menu(){
     int choix = 0;
     printf("\n=== SUIVI STRUCTURALE PONT FAIDHERBE ===\n");
-    printf("1. Charger donn�es de mesure\n");
+    printf("1. Charger donnees de mesure\n");
     printf("2. Valider tous les capteurs\n");
-    printf("3. Afficher �tat d�taill� des capteurs\n");
+    printf("3. Afficher etat detaille des capteurs\n");
     printf("4. Analyser anomalies\n");
-    printf("5. Calculer indice de sant� structurale\n");
-    printf("6. G�n�rer rapport d'inspection\n");
-    printf("7. Exporter rapport r�glementaire (Eurocode)\n");
+    printf("5. Calculer indice de sante structurale\n");
+    printf("6. Generer rapport d'inspection\n");
+    printf("7. Exporter rapport reglementaire (Eurocode)\n");
     printf("8. Afficher alertes actives\n");
     printf("9. Quitter\n");
     printf("Entrer votre choix\n");
