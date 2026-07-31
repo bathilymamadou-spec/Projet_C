@@ -46,8 +46,6 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
     }
 }
 
-
-
 // Calcul du score de déformation pondéré
 float calculer_score_deformation(Capteur capteurs[], int n) {
     float max = 0;
@@ -153,6 +151,7 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
     }
     printf("==================================================\n");
 }
+
 void trier_capteurs_par_type(Capteur capteurs[], int n){
     for (int i = 0; i < n-1; i++){
         for (int j = i+1; j < n; j++){
