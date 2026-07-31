@@ -76,7 +76,8 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
         }
     }
 
-    if (max == 0) return 100;
+    if (max == 0)
+        return 100;
     return 100 - ((somme / max) * 100);
 }
 
@@ -93,7 +94,8 @@ float calculer_score_charge(Capteur capteurs[], int n) {
         }
     }
 
-    if (nb_charge == 0) return 100;
+    if (nb_charge == 0)
+        return 100;
 
     float max = nb_charge * 100;
     return 100 - ((somme / max) * 100);
@@ -161,17 +163,19 @@ Capteur* recherche_capteur_critique(Capteur capteurs[], int n){
 void afficher_menu(){
     int choix = 0;
     printf("\n=== SUIVI STRUCTURALE PONT FAIDHERBE ===\n");
-    printf("1. Charger donn�es de mesure\n");
+    printf("1. Charger donnees de mesure\n");
     printf("2. Valider tous les capteurs\n");
-    printf("3. Afficher �tat d�taill� des capteurs\n");
+    printf("3. Afficher etat detaille des capteurs\n");
     printf("4. Analyser anomalies\n");
-    printf("5. Calculer indice de sant� structurale\n");
-    printf("6. G�n�rer rapport d'inspection\n");
-    printf("7. Exporter rapport r�glementaire (Eurocode)\n");
+    printf("5. Calculer indice de sante structurale\n");
+    printf("6. Generer rapport d'inspection\n");
+    printf("7. Exporter rapport reglementaire (Eurocode)\n");
     printf("8. Afficher alertes actives\n");
     printf("9. Quitter\n");
     printf("Entrer votre choix\n");
     scanf("%d", &choix);
 }
+
+
 
 
