@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "pont.h"
 
 
@@ -38,23 +39,19 @@ float calculer_score_deformation(Capteur capteurs[], int n) {
     //on parcoure le tableau et vérifie si le capteur est de type déformation
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "DEFORM") == 0) {
-            float ecart = 0;
             if (capteurs[i].valeur_nominale == 150) {
-                ecart = capteurs[i].valeur_mesuree;
-                somme_pile += ecart;
-                max += 150;
+                somme_pile += capteurs[i].valeur_mesuree;
             }
             if (capteurs[i].valeur_nominale == 80) {
-                ecart = capteurs[i].valeur_mesuree;
-                somme_travee += ecart;
-                max +=80;
+                somme_travee += capteurs[i].valeur_mesuree;
             }
-
+            max += 200;
         }
     }
 
-    float somme_ponderee = (somme_pile * 0.6 + somme_travee * 0.4);
-    if (max == 0) return 100;
+    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.4);
+    if (max == 0)
+        return 100;
     return 100 - ((somme_ponderee / max) * 100);
 }
 
@@ -67,16 +64,10 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "VIBR") == 0) {
             float ecart = 0;
-
-            if (capteurs[i].valeur_mesuree > 0.50) {
-                ecart = capteurs[i].valeur_mesuree - 0.50;
-            }
-            else if (capteurs[i].valeur_mesuree < 0.35) {
-                ecart = 0.35 - capteurs[i].valeur_mesuree;
-            }
-
+            float ideal = 0.425; //on prend le milieu de la plage donnée
+            ecart = fabs(capteurs[i].valeur_mesuree - ideal);
             somme += ecart;
-            max += 0.25;
+            max += 0.1;
         }
     }
 
@@ -88,12 +79,13 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
 // Calcul du score de charge avec le pourcentage d'utilisation
 float calculer_score_charge(Capteur capteurs[], int n) {
     float somme = 0;
-    int nb_charge = 0;
+    int nb_charge = 0; //le nombre de capteur de charge
+    float utilisation; //le pourcentage de la charge utilisé
 
     //on parcoure le tableau et vérifie si le capteur est de type charge
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "CHARGE") == 0) {
-            float utilisation = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale) * 100;
+                utilisation = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale) * 100;
             somme += utilisation;
             nb_charge++;
         }
@@ -101,11 +93,10 @@ float calculer_score_charge(Capteur capteurs[], int n) {
 
     if (nb_charge == 0)
         return 100;
-
-    float max = nb_charge * 100;
-    return 100 - ((somme / max) * 100);
+    return somme / nb_charge;
 }
 
+//calcul de l'indice global et affichage des valeurs et des recommandations
 void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr,
                           IndiceHealthStructural *sante, FILE *f) {
     sante->score_deformation = calculer_score_deformation(capteurs, n);
@@ -140,6 +131,7 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
     }
     fputs("==================================================\n", f);
 }
+
 void trier_capteurs_par_type(Capteur capteurs[], int n){
     for (int i = 0; i < n-1; i++){
         for (int j = i+1; j < n; j++){

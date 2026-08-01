@@ -33,7 +33,7 @@ Capteur capteurs[NB_CAPTEURS] = {
     {"C15", "Noeud 7", "VIBR", 0.43, 0.42, 0.50, 0.60, 0.425, OK, ""},
     {"C16", "Noeud 8", "VIBR", 0.41, 0.40, 0.50, 0.60, 0.425, OK, ""},
 
-    // 8 capteurs de charge (4 piles + 4 appuis)
+    // 8 capteurs de charge
     {"C17", "Pile Nord", "CHARGE", 2450.0, 2400.0, 2400.0, 2700.0, 3000.0, OK, ""},
     {"C18", "Pile Centre 1", "CHARGE", 2380.0, 2350.0, 2400.0, 2700.0, 3000.0, OK, ""},
     {"C19", "Pile Centre 2", "CHARGE", 2410.0, 2380.0, 2400.0, 2700.0, 3000.0, JAUNE, "Alerte jaune"},

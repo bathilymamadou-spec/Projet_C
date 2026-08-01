@@ -10,11 +10,16 @@
 
 void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr) {
     // Générer le nom du fichier avec la date
-    time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
+    long t = time(NULL); //stockage de la date actuelle en seconde
+    struct tm temp; //la structure tm a le format A/M/J/H/Mi/S
+    localtime_r(&t, &temp); /* on convertit la date en seconde dans un format lisible
+                                et on le stocke dans notre structure */
+
     char nom_fichier[50];
+
+    //création du nom du fichier avec le jour et la date de sa création
     sprintf(nom_fichier, "rapport_inspection_%02d-%02d-%04d.txt",
-            tm->tm_mday, tm->tm_mon + 1, tm->tm_year + 1900);
+            temp.tm_mday, temp.tm_mon + 1, temp.tm_year + 1900);
 
     FILE *f = fopen(nom_fichier, "w");
     if (f == NULL) {
@@ -27,7 +32,7 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
     fprintf(f, "RAPPORT D'INSPECTION\n");
     fprintf(f, "Pont Faidherbe de Saint-Louis\n");
     fprintf(f, "Date : %02d/%02d/%04d à %02d:%02d\n",
-            tm->tm_mday, tm->tm_mon + 1, tm->tm_year + 1900, tm->tm_hour, tm->tm_min);
+            temp.tm_mday, temp.tm_mon + 1, temp.tm_year + 1900, temp.tm_hour, temp.tm_min);
     fprintf(f, "Norme : EN 1999 (Eurocode 9) - Conception des structures en aluminium\n");
     fprintf(f, "================================================================\n\n");
 
@@ -68,7 +73,7 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
     fprintf(f, "\n");
 
     // Pied de page
-    fprintf(f, "                    FIN DU RAPPORT\n");
+    fprintf(f, "FIN DU RAPPORT\n");
     fprintf(f, "================================================================\n");
 
     fclose(f);
