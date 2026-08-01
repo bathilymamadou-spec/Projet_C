@@ -78,9 +78,10 @@ float calculer_score_vibration(Capteur capteurs[], int n);
 float calculer_score_charge(Capteur capteurs[], int n);
 //Calcule le score de charge (0 - 100) basé sur utilisation de capacité.
 
-void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr, IndiceHealthStructural *sante);
+void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr, IndiceHealthStructural *sante, FILE *f);
 //Combine les trois scores avec pondérations (40% déf, 35% vibr, 25% charge).
-//Génère diagnostic et recommandations.
+//ajout d'un parametre File afin de pouvoir remplir le rapport
+
 void trier_capteurs_par_type(Capteur capteurs[], int n);
 //Tri à bulles groupant capteurs par type (DEFORM, VIBR, CHARGE).
 
@@ -90,6 +91,47 @@ Retourne pointeur ou NULL.*/
 
 void afficher_menu();
 //Affiche menu principal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Prototypes fonctions création de fichiers
+void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr);
 
 #endif // PONT_H_INCLUDED
 

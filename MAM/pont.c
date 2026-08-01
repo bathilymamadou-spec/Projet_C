@@ -31,26 +31,29 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
 
 // Calcul du score de déformation pondéré
 float calculer_score_deformation(Capteur capteurs[], int n) {
-    float max = 0;
-    float somme_pile = 0;
-    float somme_travee = 0;
+    float max = 0; // l'ecart maximal
+    float somme_pile = 0; //l'ecart des piles
+    float somme_travee = 0; //l'ecart des travees
 
+    //on parcoure le tableau et vérifie si le capteur est de type déformation
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "DEFORM") == 0) {
             float ecart = 0;
             if (capteurs[i].valeur_nominale == 150) {
                 ecart = capteurs[i].valeur_mesuree;
                 somme_pile += ecart;
+                max += 150;
             }
             if (capteurs[i].valeur_nominale == 80) {
                 ecart = capteurs[i].valeur_mesuree;
                 somme_travee += ecart;
+                max +=80;
             }
-            max += 200;
+
         }
     }
 
-    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.3);
+    float somme_ponderee = (somme_pile * 0.6 + somme_travee * 0.4);
     if (max == 0) return 100;
     return 100 - ((somme_ponderee / max) * 100);
 }
@@ -60,6 +63,7 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
     float somme = 0;
     float max = 0;
 
+    //on parcoure le tableau et vérifie si le capteur est de type vibration
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "VIBR") == 0) {
             float ecart = 0;
@@ -86,6 +90,7 @@ float calculer_score_charge(Capteur capteurs[], int n) {
     float somme = 0;
     int nb_charge = 0;
 
+    //on parcoure le tableau et vérifie si le capteur est de type charge
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "CHARGE") == 0) {
             float utilisation = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale) * 100;
@@ -102,7 +107,7 @@ float calculer_score_charge(Capteur capteurs[], int n) {
 }
 
 void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr,
-                          IndiceHealthStructural *sante) {
+                          IndiceHealthStructural *sante, FILE *f) {
     sante->score_deformation = calculer_score_deformation(capteurs, n);
     sante->score_vibration = calculer_score_vibration(capteurs, n);
     sante->score_charge = calculer_score_charge(capteurs, n);
@@ -110,31 +115,30 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
     sante->indice_global = (sante->score_deformation * 0.4 +
                             sante->score_vibration * 0.35 +
                             sante->score_charge * 0.25);
-
-    printf("\n========== RESUME DE SANTE STRUCTURALE ==========\n");
-    printf("Indice global (SHI) \t: %.2f / 100\n", sante->indice_global);
-    printf("  Score deformation \t: %.2f / 100\n", sante->score_deformation);
-    printf("  Score vibration \t: %.2f / 100\n", sante->score_vibration);
-    printf("  Score charge \t\t: %.2f / 100\n", sante->score_charge);
-    printf("---------------------------------------------------\n");
+    fputs("\n========== RESUME DE SANTE STRUCTURALE ==========\n", f);
+    fprintf(f, "Indice global (SHI) \t: %.2f / 100\n", sante->indice_global);
+    fprintf(f, "  Score deformation \t: %.2f / 100\n", sante->score_deformation);
+    fprintf(f,"  Score vibration \t: %.2f / 100\n", sante->score_vibration);
+    fprintf(f,"  Score charge \t\t: %.2f / 100\n", sante->score_charge);
+    fputs("---------------------------------------------------\n", f);
 
     if (sante->indice_global >= 90) {
-        printf("Etat general \t\t: BONNE SANTE\n");
-        printf("Recommandation \t\t: Inspections annuelles\n");
+        fputs("Etat general \t\t: BONNE SANTE\n",f);
+        fputs("Recommandation \t\t: Inspections annuelles\n", f);
     }
     else if (sante->indice_global >= 80) {
-        printf("Etat general \t\t: ALERTE JAUNE\n");
-        printf("Recommandation \t\t: Inspections trimestrielles\n");
+        fputs("Etat general \t\t: ALERTE JAUNE\n", f);
+        fputs("Recommandation \t\t: Inspections trimestrielles\n",f);
     }
     else if (sante->indice_global >= 70) {
-        printf("Etat general \t\t: ALERTE ORANGE\n");
-        printf("Recommandation \t\t: Inspections mensuelles\n");
+        fputs("Etat general \t\t: ALERTE ORANGE\n", f);
+        fputs("Recommandation \t\t: Inspections mensuelles\n", f);
     }
     else {
-        printf("Etat general \t\t: ALERTE ROUGE\n");
-        printf("Recommandation \t\t: Inspection d'urgence\n");
+            fputs("Etat general \t\t: ALERTE ROUGE\n", f);
+        fputs("Recommandation \t\t: Inspection d'urgence\n",f);
     }
-    printf("==================================================\n");
+    fputs("==================================================\n", f);
 }
 void trier_capteurs_par_type(Capteur capteurs[], int n){
     for (int i = 0; i < n-1; i++){

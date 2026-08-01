@@ -55,8 +55,16 @@ calculer_score_deformation(capteurs, NB_CAPTEURS);
 calculer_score_vibration(capteurs, NB_CAPTEURS);
 calculer_score_charge(capteurs, NB_CAPTEURS);
 
-IndiceHealthStructural sante;
-calculer_indice_sante(capteurs, NB_CAPTEURS,alertes,  2, &sante);
+
+
+
+
+
+
+
+
+
+rapport_inspection(capteurs, NB_CAPTEURS,alertes, 2);
 
     return 0;
 }
