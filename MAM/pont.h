@@ -91,5 +91,9 @@ Retourne pointeur ou NULL.*/
 void afficher_menu();
 //Affiche menu principal
 
+int charger_donnees_mesures(Capteur capteurs[], int n, const char *nom_fichier);
+
+int sauvegarder_capteurs_binaire(Capteur capteurs[], int n, const char *nom_fichier);
+
 #endif // PONT_H_INCLUDED
 
