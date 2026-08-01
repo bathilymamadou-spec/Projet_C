@@ -7,8 +7,11 @@
 #define NB_ALERTES_MAX 50
 
 
-int main()
-{
+int main(){
+Alerte alertes[NB_ALERTES_MAX];
+IndiceHealthStructural sante;
+RapportInspection rapport;
+int nb_alertes = 0;
 // tableau des 24 capteurs
 Capteur capteurs[NB_CAPTEURS] = {
     // 4 capteurs de déformation piles
@@ -44,19 +47,68 @@ Capteur capteurs[NB_CAPTEURS] = {
     {"C24", "Appui Extreme", "CHARGE", 1195.0, 1175.0, 1200.0, 1350.0, 1500.0, OK, ""}
 };
 
-Alerte alertes[] ={ {"27/07/2026 10:00", 1, "SURCHARGE", "ROUGE", capteurs[1].valeur_mesuree,
-                    capteurs[1].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"},
-                     {"27/07/2026 10:00", 2, "SURCHARGE", "ROUGE", capteurs[2].valeur_mesuree,
-                    capteurs[2].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"}
+int choix ;
+    do {
+        afficher_menu();
+        scanf("%d", &choix);
+        switch (choix) {
+            case 1:
+                if (!charger_donnees_mesures(capteurs, NB_CAPTEURS, "mesures_capteurs.txt")) {
+                    printf("Note : Fichier 'mesures_capteurs.txt' introuvable.\n");
+                } else {
+                    printf("Données de mesures chargées avec succès !\n");
+                }
+                break;
 
-};
+            case 2:
+               printf("\n--- Validation des Capteurs ---\n");
+               for (int i = 0; i < NB_CAPTEURS; i++) {
+                   if (!valider_capteur(&capteurs[i])) {
+                       printf("[ERREUR MATÉRIELLE] Capteur %s (%s) hors plages physiques! Valeur = %.2f\n",
+                       capteurs[i].id, capteurs[i].nom, capteurs[i].valeur_mesuree);
+                    }
+                }
+                printf("Validation physique achevée.\n");
+                sauvegarder_capteurs_binaire(capteurs, NB_CAPTEURS, "capteurs.dat");
+                break;
 
-calculer_score_deformation(capteurs, NB_CAPTEURS);
-calculer_score_vibration(capteurs, NB_CAPTEURS);
-calculer_score_charge(capteurs, NB_CAPTEURS);
+            case 3:
+                trier_capteurs_par_type(capteurs, NB_CAPTEURS);
+                break;
 
-IndiceHealthStructural sante;
-calculer_indice_sante(capteurs, NB_CAPTEURS,alertes,  2, &sante);
+            case 4:
+                nb_alertes = 0; // Réinitialisation
+                detecter_anomalies_vibration(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
+                detecter_anomalies_charge(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
+                printf("Analyse effectuée. %d alerte(s) détectée(s) et archivée(s).\n", nb_alertes);
+                break;
+
+            case 5:
+                calculer_indice_sante(capteurs, NB_CAPTEURS, alertes, nb_alertes, &sante);
+                break;
+
+            case 6:
+
+                break;
+
+            case 7:
+
+                break;
+
+            case 8:
+
+                break;
+
+            case 9:
+                printf("Fermeture du système de suivi structural.\n");
+                break;
+
+            default:
+                printf("Choix invalide. Réessayez.\n");
+        }
+    } while (choix != 9);
 
     return 0;
 }
+
+
