@@ -132,5 +132,8 @@ int charger_donnees_mesures(Capteur capteurs[], int n, const char *nom_fichier);
 
 int sauvegarder_capteurs_binaire(Capteur capteurs[], int n, const char *nom_fichier);
 
+void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes);
+
+
 #endif // PONT_H_INCLUDED
 
