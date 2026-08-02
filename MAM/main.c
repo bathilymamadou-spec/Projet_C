@@ -110,7 +110,7 @@ int choix ;
                 break;
 
             case 6:
-
+                rapport_inspection(capteurs, NB_CAPTEURS, alertes, nb_alertes);
 
                 sleep(2);
                 break;
