@@ -230,5 +230,5 @@ void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
     // Fermer le fichier
     fclose(f_alert);
 
-    printf("Fichier alerte genere : alertes_01-08-2024.log\n");
+    printf("Fichier alerte genere : %s\n", nom_fichier);
 }

@@ -12,7 +12,6 @@ Alerte alertes[NB_ALERTES_MAX];
 IndiceHealthStructural sante;
 RapportInspection rapport;
 int nb_alertes = 0;
-FILE *f;
 
 
 
@@ -114,9 +113,6 @@ int choix ;
 
             case 8:
                 alertes_jour(capteurs, NB_CAPTEURS, alertes, nb_alertes);
-
-
-
                 break;
 
             case 9:
