@@ -24,7 +24,7 @@ Capteur capteurs[NB_CAPTEURS] = {
     {"C08", "Travée Sud", "DEFORM", 44.5, 42.0, 80.0, 200.0, 80.0, OK, ""},
 
     // 8 capteurs de vibration
-    {"C09", "Noeud 1", "VIBR", 10000000.42, 0.41, 0.50, 0.60, 0.425, OK, ""},
+    {"C09", "Noeud 1", "VIBR", 0.42, 0.41, 0.50, 0.60, 0.425, OK, ""},
     {"C10", "Noeud 2", "VIBR", 0.38, 0.37, 0.50, 0.60, 0.425, OK, ""},
     {"C11", "Noeud 3", "VIBR", 0.45, 0.44, 0.50, 0.60, 0.425, OK, ""},
     {"C12", "Noeud 4", "VIBR", 0.40, 0.39, 0.50, 0.60, 0.425, OK, ""},
@@ -34,9 +34,9 @@ Capteur capteurs[NB_CAPTEURS] = {
     {"C16", "Noeud 8", "VIBR", 0.41, 0.40, 0.50, 0.60, 0.425, OK, ""},
 
     // 8 capteurs de charge
-    {"C17", "Pile Nord", "CHARGE", 2450.0, 2400.0, 2400.0, 2700.0, 3000.0, OK, ""},
+    {"C17", "Pile Nord", "CHARGE", 2450.0, 2400.0, 2400.0, 2700.0, 3000.0, JAUNE, ""},
     {"C18", "Pile Centre 1", "CHARGE", 2380.0, 2350.0, 2400.0, 2700.0, 3000.0, OK, ""},
-    {"C19", "Pile Centre 2", "CHARGE", 2410.0, 2380.0, 2400.0, 2700.0, 3000.0, JAUNE, "Alerte jaune"},
+    {"C19", "Pile Centre 2", "CHARGE", 2410.0, 2380.0, 2400.0, 2700.0, 3000.0, JAUNE, "Utlisation 81% de la capacité"},
     {"C20", "Pile Sud", "CHARGE", 2440.0, 2410.0, 2400.0, 2700.0, 3000.0, JAUNE, "Alerte jaune"},
     {"C21", "Appui Nord", "CHARGE", 1200.0, 1180.0, 1200.0, 1350.0, 1500.0, OK, ""},
     {"C22", "Appui Centre", "CHARGE", 1180.0, 1160.0, 1200.0, 1350.0, 1500.0, OK, ""},
@@ -45,9 +45,9 @@ Capteur capteurs[NB_CAPTEURS] = {
 };
 
 Alerte alertes[] ={ {"27/07/2026 10:00", 1, "SURCHARGE", "ROUGE", capteurs[1].valeur_mesuree,
-                    capteurs[1].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"},
+                    capteurs[1].valeur_nominale * 0.90, "Fermeture circulation Poids Lourds"},
                      {"27/07/2026 10:00", 2, "SURCHARGE", "ROUGE", capteurs[2].valeur_mesuree,
-                    capteurs[2].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"}
+                    capteurs[2].valeur_nominale * 0.90, "Fermeture circulation Poids Lourds"}
 
 };
 

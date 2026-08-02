@@ -5,25 +5,35 @@ Date : 01-08-2024
 Norme : EN 1999 (Eurocode 9) - Conception des structures en aluminium
 ======================================================
 
+RESUME DE SANTE STRUCTURALE
+Indice global (SHI)       : 74.91 / 100 
+  Score deformation       : 75.90 / 100(40% ponderation)
+  Score vibration          : 70.00 / 100(35% ponderation)
+  Score charge             : 80.21 / 100(25% ponderation)
 
-========== RESUME DE SANTE STRUCTURALE ==========
-Indice global (SHI) 	: -437499872.00 / 100
-  Score deformation 	: 75.90 / 100
-  Score vibration 	: -1249999744.00 / 100
-  Score charge 		: 80.21 / 100
----------------------------------------------------
-Etat general 		: ALERTE ROUGE
-Recommandation 		: Inspection d'urgence
-==================================================
+Etat general            : ALERTE ORANGE
+Recommandation          : Inspections mensuelles
 
 ALERTES ACTIVES
 Niveau JAUNE (5 alerte(s))
+- C13 Noeud 5 : Alerte jaune
+- C17 Pile Nord : 
+- C19 Pile Centre 2 : Utlisation 81% de la capacité
+- C20 Pile Sud : Alerte jaune
+- C23 Appui Sud : Alerte jaune
+
 Niveau ROUGE (0 alerte(s))
+  AUCUNE ALERTE
 
 CONFORMITE EUROCODE 9
-Déformation vs limites 	: OK
-Vibration vs résonance 	: OK
-Charge vs capacité 	: OK
+   Deformation vs limites           : OK
+   Vibration vs resonance           : OK
+   Charge vs capacite               : OK
 
+ACTIONS PRIORITAIRES
+1. Fermeture circulation Poids Lourds
+2. Fermeture circulation Poids Lourds
+
+======================================================
 FIN DU RAPPORT
 ======================================================
