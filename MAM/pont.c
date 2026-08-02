@@ -17,15 +17,15 @@ int valider_capteur(Capteur *cap){
         else{
             float saut=fabsf(cap->valeur_mesuree-cap->valeur_precedente);
             if (fabsf(cap->valeur_mesuree)>200 || saut>25.0f){
-                cap->etat=3; // ROUGE
+                cap->etat=ROUGE; // ROUGE
                 strcpy(cap->remarque, "ALERTE ROUGE: Seuil critique");
             }
             else if (saut>10.0f){
-                cap->etat=2; // JAUNE
+                cap->etat=JAUNE; // JAUNE
                 strcpy(cap->remarque, "ALERTE JAUNE: Augmentation du saut");
             }
             else{
-                cap->etat=1; // OK
+                cap->etat=OK; // OK
                 strcpy(cap->remarque, "OK: Deformation normale");
             }
             return 1; // Mesure valide
@@ -44,15 +44,15 @@ int valider_capteur(Capteur *cap){
     // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
         else{
             if (cap->valeur_mesuree>0.60f || cap->valeur_mesuree<0.30f) {
-                cap->etat = 3; // ROUGE
+                cap->etat = ROUGE; // ROUGE
                 strcpy(cap->remarque, "ALERTE ROUGE: Fréquence hors plage");
             }
             else if (cap->valeur_mesuree>=0.51f && cap->valeur_mesuree<=0.60f) {
-                cap->etat=2;// JAUNE
+                cap->etat=JAUNE;// JAUNE
                 strcpy(cap->remarque, "ALERTE JAUNE: Augmentation de la fréquence");
             }
             else {
-                cap->etat=1; // OK
+                cap->etat=OK; // OK
                 strcpy(cap->remarque, "OK: Fréquence normale");
             }
             return 1; // Mesure valide
@@ -70,15 +70,15 @@ int valider_capteur(Capteur *cap){
     // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
         else{
             if (cap->valeur_mesuree>cap->seuil_alerte_r) {
-                cap->etat = 3; // ROUGE
+                cap->etat = ROUGE; // ROUGE
                 strcpy(cap->remarque, "ALERTE ROUGE: Surcharge critique!!");
             }
             else if (cap->valeur_mesuree>cap->seuil_alerte_j) {
-                cap->etat = 2; // JAUNE
+                cap->etat = JAUNE; // JAUNE
                 strcpy(cap->remarque, "ALERTE JAUNE: Surcharge modèréé");
             }
             else {
-                cap->etat = 1; // OK
+                cap->etat = OK; // OK
                 strcpy(cap->remarque, "OK: Charge normale");
             }
             return 1; // Mesure valide
@@ -240,13 +240,13 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
         if (strcmp(capteurs[i].type, "CHARGE") == 0) {
             float div = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale)*100;
             if (div > 80.0) {
-                capteurs[i].etat = 2;
+                capteurs[i].etat = JAUNE;
                 sprintf(capteurs[i].remarque, "Utilisation de %f de la capacite", div);
                 Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
                 alertes[(*nb_alr)++]=alerts;//on initialise un tableau d'alertes
             }
             else if (div > 90.0) {
-                capteurs[i].etat = 3;
+                capteurs[i].etat = ROUGE;
                 sprintf(capteurs[i].remarque, "Utilisation de %f de la capacité", div);
                 Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"};
                 alertes[(*nb_alr)++]=alerts;
@@ -294,7 +294,7 @@ float calculer_score_deformation(Capteur capteurs[], int n) {
         }
     }
 
-    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.4);
+    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.3);
     if (max == 0)
         return 100;
     return 100 - ((somme_ponderee / max) * 100);
@@ -312,7 +312,7 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
             float ideal = 0.425; //on prend le milieu de la plage donnée
             ecart = fabs(capteurs[i].valeur_mesuree - ideal);
             somme += ecart;
-            max += 0.1;
+            max += 0.175;
         }
     }
 

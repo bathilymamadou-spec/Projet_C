@@ -2,7 +2,8 @@
 #define PONT_H_INCLUDED
 
 typedef enum{
-    OK=1,
+    DEFAULT, //etat initial du capteur
+    OK,
     JAUNE,
     ROUGE
 }etat;
