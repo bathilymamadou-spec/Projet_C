@@ -159,4 +159,18 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
     fclose(f);
 
     printf(" Rapport genere : %s\n", nom_fichier);
+
+
+}
+
+void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
+FILE *f_alert = fopen("alertes_01-08-2024", "w");
+    if (f_alert == NULL) {
+        perror("fopen");
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+            fprintf(f_alert, "- %s %s : %s\n", capteurs[i].id, capteurs[i].nom, capteurs[i].remarque);
+        }
+    printf("Fichier alerte généré");
 }

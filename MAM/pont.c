@@ -87,126 +87,6 @@ int valider_capteur(Capteur *cap){
 }
 
 
-void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
-    const char *DATE_COURANTE = "30/07/2026 18:00"; // Horodatage courant des mesures
-    for (int i = 0; i < n; i++) {
-        // Filtrage : on ne traite que les capteurs de vibration
-        if (strcmp(capteurs[i].type, "VIBR") != 0) {
-            continue;
-        }
-
-        float freq = capteurs[i].valeur_mesuree;
-
-        // --- 1. CAS ROUGE : Fréquence hors limites critiques (< 0.30 Hz ou > 0.60 Hz) ---
-        if (freq > 0.60f || freq < 0.30f) {
-            Alerte alr;
-            strcpy(alr.horodatage, DATE_COURANTE);
-            alr.num_capteur = i;
-            strcpy(alr.type_alerte, "VIBRATION");
-            strcpy(alr.niveau, "ROUGE");
-            alr.valeur = freq;
-            alr.seuil = (freq > 0.60f) ? 0.60f : 0.30f;
-            strcpy(alr.action, "URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur");
-            alertes[*nb_alr] = alr;
-            (*nb_alr)++;
-        }
-        // --- 2. CAS JAUNE : Dérive de fréquence (0.51 Hz à 0.60 Hz) ---
-        else if (freq >= 0.51f && freq <= 0.60f) {
-            Alerte alr;
-            strcpy(alr.horodatage, DATE_COURANTE);
-            alr.num_capteur = i;
-            strcpy(alr.type_alerte, "VIBRATION");
-            strcpy(alr.niveau, "JAUNE");
-            alr.valeur = freq;
-            alr.seuil = 0.50f; // La limite nominale supérieure en service est 0.50 Hz
-            strcpy(alr.action, "Alerte Jaune: Derive de frequence observee (augmentation de raideur)");
-            alertes[*nb_alr] = alr;
-            (*nb_alr)++;
-        }
-    }
-}
-
-int valider_capteur(Capteur *cap){
-    // --- CASE 1 : CAPTEURS DE DÉFORMATION ---
-    if (strcmp(cap->type, "DEFORM")==0){
-        // 1. Vérification de la cohérence physique selon le type de capteur
-            // Une déformation aberrante dépasserait largement les plages physiques admissibles
-        if (cap->valeur_mesuree<-700 || cap->valeur_mesuree>700){
-            strcpy(cap->remarque, "ERREUR: Signal hors plage physique");
-            return 0;
-        }
-        // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
-        else{
-            float saut=fabsf(cap->valeur_mesuree-cap->valeur_precedente);
-            if (fabsf(cap->valeur_mesuree)>200 || saut>25.0f){
-                cap->etat=3; // ROUGE
-                strcpy(cap->remarque, "ALERTE ROUGE: Seuil critique");
-            }
-            else if (saut>10.0f){
-                cap->etat=2; // JAUNE
-                strcpy(cap->remarque, "ALERTE JAUNE: Augmentation du saut");
-            }
-            else{
-                cap->etat=1; // OK
-                strcpy(cap->remarque, "OK: Deformation normale");
-            }
-            return 1; // Mesure valide
-        }
-
-    }
-
-    // --- CASE 2 : CAPTEURS DE VIBRATION ---
-    if (strcmp(cap->type, "VIBR")==0){
-    // 1. Vérification de la cohérence physique selon le type de capteur
-        // Une fréquence de vibration ne peut pas être négative ou exagérément élevée
-        if (cap->valeur_mesuree<0 || cap->valeur_mesuree>2){
-            strcpy(cap->remarque, "ERREUR: Signal de vibration incohérent");
-            return 0;
-        }
-    // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
-        else{
-            if (cap->valeur_mesuree>0.60f || cap->valeur_mesuree<0.30f) {
-                cap->etat = 3; // ROUGE
-                strcpy(cap->remarque, "ALERTE ROUGE: Fréquence hors plage");
-            }
-            else if (cap->valeur_mesuree>=0.51f && cap->valeur_mesuree<=0.60f) {
-                cap->etat=2;// JAUNE
-                strcpy(cap->remarque, "ALERTE JAUNE: Augmentation de la fréquence");
-            }
-            else {
-                cap->etat=1; // OK
-                strcpy(cap->remarque, "OK: Fréquence normale");
-            }
-            return 1; // Mesure valide
-        }
-    }
-
-    // --- CASE 3 : CAPTEURS DE CHARGE ---
-    if (strcmp(cap->type, "CHARGE")==0){
-    // 1. Vérification de la cohérence physique selon le type de capteur
-        // Une charge ne peut pas être négative ou dépasser largement la capacité critique
-        if (cap->valeur_mesuree<0 || cap->valeur_mesuree>5000){
-            strcpy(cap->remarque, "ERREUR: Valeur de charge absurde");
-            return 0;
-        }
-    // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
-        else{
-            if (cap->valeur_mesuree>cap->seuil_alerte_r) {
-                cap->etat = 3; // ROUGE
-                strcpy(cap->remarque, "ALERTE ROUGE: Surcharge critique!!");
-            }
-            else if (cap->valeur_mesuree>cap->seuil_alerte_j) {
-                cap->etat = 2; // JAUNE
-                strcpy(cap->remarque, "ALERTE JAUNE: Surcharge modèréé");
-            }
-            else {
-                cap->etat = 1; // OK
-                strcpy(cap->remarque, "OK: Charge normale");
-            }
-            return 1; // Mesure valide
-        }
-    }
-}
 
 void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
     const char *DATE_COURANTE="30-07-2026 18:00"; // Exemple d'horodatage courant
@@ -461,7 +341,7 @@ float calculer_score_charge(Capteur capteurs[], int n) {
     return somme / nb_charge;
 }
 
-//calcul de l'indice global et affichage des valeurs et des recommandations
+// Calcul de l'indice global et affichage des valeurs et des recommandations
 void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr,
                           IndiceHealthStructural *sante, FILE *f) {
     sante->score_deformation = calculer_score_deformation(capteurs, n);
@@ -471,27 +351,55 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
     sante->indice_global = (sante->score_deformation * 0.4 +
                             sante->score_vibration * 0.35 +
                             sante->score_charge * 0.25);
-    fputs("\nRESUME DE SANTE STRUCTURALE\n", f);
-    fprintf(f, "Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);
-    fprintf(f, "  Score deformation       : %.2f / 100(40%% ponderation)\n", sante->score_deformation);
-    fprintf(f,"  Score vibration          : %.2f / 100(35%% ponderation)\n", sante->score_vibration);
-    fprintf(f,"  Score charge             : %.2f / 100(25%% ponderation)\n\n", sante->score_charge);
 
-    if (sante->indice_global >= 90) {
-        fputs("Etat general            : BONNE SANTE\n",f);
-        fputs("Recommandation          : Inspections annuelles\n", f);
-    }
-    else if (sante->indice_global >= 80) {
-        fputs("Etat general            : ALERTE JAUNE\n", f);
-        fputs("Recommandation          : Inspections trimestrielles\n",f);
-    }
-    else if (sante->indice_global >= 70) {
-        fputs("Etat general            : ALERTE ORANGE\n", f);
-        fputs("Recommandation          : Inspections mensuelles\n", f);
+    // Affichage à l'écran (si f == NULL) ou dans le fichier (si f != NULL)
+    if (f == NULL) {
+        printf("\nRESUME DE SANTE STRUCTURALE\n");
+        printf("Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);
+        printf("  Score deformation       : %.2f / 100 (40%% ponderation)\n", sante->score_deformation);
+        printf("  Score vibration         : %.2f / 100 (35%% ponderation)\n", sante->score_vibration);
+        printf("  Score charge            : %.2f / 100 (25%% ponderation)\n\n", sante->score_charge);
+
+        if (sante->indice_global >= 90) {
+            printf("Etat general            : BONNE SANTE\n");
+            printf("Recommandation          : Inspections annuelles\n");
+        }
+        else if (sante->indice_global >= 80) {
+            printf("Etat general            : ALERTE JAUNE\n");
+            printf("Recommandation          : Inspections trimestrielles\n");
+        }
+        else if (sante->indice_global >= 70) {
+            printf("Etat general            : ALERTE ORANGE\n");
+            printf("Recommandation          : Inspections mensuelles\n");
+        }
+        else {
+            printf("Etat general            : ALERTE ROUGE\n");
+            printf("Recommandation          : Inspection d'urgence\n");
+        }
     }
     else {
-        fputs("Etat general            : ALERTE ROUGE\n", f);
-        fputs("Recommandation          : Inspection d'urgence\n",f);
+        fprintf(f, "\nRESUME DE SANTE STRUCTURALE\n");
+        fprintf(f, "Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);
+        fprintf(f, "  Score deformation       : %.2f / 100 (40%% ponderation)\n", sante->score_deformation);
+        fprintf(f, "  Score vibration         : %.2f / 100 (35%% ponderation)\n", sante->score_vibration);
+        fprintf(f, "  Score charge            : %.2f / 100 (25%% ponderation)\n\n", sante->score_charge);
+
+        if (sante->indice_global >= 90) {
+            fprintf(f, "Etat general            : BONNE SANTE\n");
+            fprintf(f, "Recommandation          : Inspections annuelles\n");
+        }
+        else if (sante->indice_global >= 80) {
+            fprintf(f, "Etat general            : ALERTE JAUNE\n");
+            fprintf(f, "Recommandation          : Inspections trimestrielles\n");
+        }
+        else if (sante->indice_global >= 70) {
+            fprintf(f, "Etat general            : ALERTE ORANGE\n");
+            fprintf(f, "Recommandation          : Inspections mensuelles\n");
+        }
+        else {
+            fprintf(f, "Etat general            : ALERTE ROUGE\n");
+            fprintf(f, "Recommandation          : Inspection d'urgence\n");
+        }
     }
 }
 

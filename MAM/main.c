@@ -12,6 +12,8 @@ Alerte alertes[NB_ALERTES_MAX];
 IndiceHealthStructural sante;
 RapportInspection rapport;
 int nb_alertes = 0;
+FILE *f;
+
 // tableau des 24 capteurs
 Capteur capteurs[NB_CAPTEURS] = {
     // 4 capteurs de déformation piles
@@ -47,11 +49,7 @@ Capteur capteurs[NB_CAPTEURS] = {
     {"C24", "Appui Extreme", "CHARGE", 1195.0, 1175.0, 1200.0, 1350.0, 1500.0, OK, ""}
 };
 
-Alerte alertes[] ={ {"27/07/2026 10:00", 1, "SURCHARGE", "ROUGE", capteurs[1].valeur_mesuree,
-                    capteurs[1].valeur_nominale * 0.90, "Fermeture circulation Poids Lourds"},
-                     {"27/07/2026 10:00", 2, "SURCHARGE", "ROUGE", capteurs[2].valeur_mesuree,
-                    capteurs[2].valeur_nominale * 0.90, "Fermeture circulation Poids Lourds"}
-                  };
+
 int choix ;
     do {
         afficher_menu();
@@ -98,10 +96,13 @@ int choix ;
                 break;
 
             case 5:
-                calculer_indice_sante(capteurs, NB_CAPTEURS, alertes, nb_alertes, &sante);
+                calculer_indice_sante(capteurs, NB_CAPTEURS, alertes, nb_alertes, &sante, NULL);
+
                 break;
 
             case 6:
+                rapport_inspection(capteurs, NB_CAPTEURS, alertes, nb_alertes);
+
 
                 break;
 
@@ -110,6 +111,7 @@ int choix ;
                 break;
 
             case 8:
+
 
                 break;
 
