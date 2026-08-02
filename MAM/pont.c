@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> //pour utiliser strcmp, strcpy, strstr
-#include <math.h>
+#include <math.h> // pour fabs
 #include "pont.h"
 
 int valider_capteur(Capteur *cap){
@@ -87,6 +87,82 @@ int valider_capteur(Capteur *cap){
 }
 
 
+
+void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
+    const char *DATE_COURANTE="30-07-2026 18:00"; // Exemple d'horodatage courant
+    for(int i=0; i<n; i++){
+            // On ne traite que les capteurs de déformation
+        if(strcmp(capteurs[i].type, "DEFORM")!=0){
+            continue;
+        }
+        float mesure = capteurs[i].valeur_mesuree;
+        float precedente = capteurs[i].valeur_precedente;
+        float saut = fabsf(mesure - precedente);
+        // --- 1. CAS CRITIQUE : Déformation unilatérale > 200 µm/m (Seuil de fissuration) ---
+        if (fabsf(mesure) > 200.0f) {
+            Alerte alr;
+            strcpy(alr.horodatage, DATE_COURANTE);
+            alr.num_capteur = i;
+            strcpy(alr.type_alerte, "DEFORMATION");
+            strcpy(alr.niveau, "ROUGE");
+            alr.valeur = mesure;
+            alr.seuil = 200.0f;
+            strcpy(alr.action, "URGENT: Seuil critique de fissuration dépassé");
+            alertes[*nb_alr] = alr;
+            (*nb_alr)++;
+        }
+        // --- 2. CAS ROUGE : Saut important (> 25 µm/m) ---
+        else if (saut > 25.0f) {
+            Alerte alr;
+            strcpy(alr.horodatage, DATE_COURANTE);
+            alr.num_capteur = i;
+            strcpy(alr.type_alerte, "DEFORMATION");
+            strcpy(alr.niveau, "ROUGE");
+            alr.valeur = saut;
+            alr.seuil = 25.0f;
+            strcpy(alr.action, "Alerte Rouge!!: Augmentation brutale de la déformation");
+            alertes[*nb_alr] = alr;
+            (*nb_alr)++;
+        }
+        // --- 3. CAS JAUNE : Saut moderé (> 10 µm/m) ---
+        else if (saut > 10.0f) {
+            Alerte alr;
+            strcpy(alr.horodatage, DATE_COURANTE);
+            alr.num_capteur = i;
+            strcpy(alr.type_alerte, "DEFORMATION");
+            strcpy(alr.niveau, "JAUNE");
+            alr.valeur = saut;
+            alr.seuil = 10.0f;
+            strcpy(alr.action, "Alerte Jaune: Augmentation progressive par rapport au jour précèdent");
+
+            alertes[*nb_alr] = alr;
+            (*nb_alr)++;
+        }
+    }
+    // --- 4. DÉTECTION D'ASYMÉTRIE (Fissuration / Comportement anormal entre capteurs) ---
+    // Exemple : Comparaison entre C06 (Travée Centre-N, index 5) et C07 (Travée Centre-S, index 6)
+    int T_centre_n = 5; // C06
+    int T_centre_s = 6; // C07
+
+    if (T_centre_n < n && T_centre_s < n) {
+        float diff_asymetrie = fabsf(capteurs[T_centre_n].valeur_mesuree - capteurs[T_centre_s].valeur_mesuree);
+
+        // Si l'écart entre les deux côtés de la travée dépasse 15 µm/m
+        if (diff_asymetrie > 15.0f) {
+            Alerte alr;
+            strcpy(alr.horodatage, DATE_COURANTE);
+            alr.num_capteur = T_centre_n;
+            strcpy(alr.type_alerte, "DEFORMATION");
+            strcpy(alr.niveau, "ROUGE");
+            alr.valeur = diff_asymetrie;
+            alr.seuil = 15.0f;
+            strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Travee Centre-N et Centre-S (Risque fissuration)");
+            alertes[*nb_alr] = alr;
+            (*nb_alr)++;
+        }
+    }
+}
+
 void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
     const char *DATE_COURANTE = "30/07/2026 18:00"; // Horodatage courant des mesures
     for (int i = 0; i < n; i++) {
@@ -120,30 +196,59 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
             alr.valeur = freq;
             alr.seuil = 0.50f; // La limite nominale supérieure en service est 0.50 Hz
             strcpy(alr.action, "Alerte Jaune: Derive de frequence observee (augmentation de raideur)");
+
             alertes[*nb_alr] = alr;
             (*nb_alr)++;
         }
     }
 }
 
-//Détecte surcharges (> 80% capacité = jaune, > 90% = rouge), déséquilibre entre piles.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr) {
     float charge_nord = -1.0, charge_sud = -1.0;
     int idx_nord = -1;
 // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
     for (int i = 0; i < n; i++) {
-        if (strcmp(capteurs[i].type, "CHARGE") == 0) { //permet de comparer les chaines de caractères
-            float div = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale)*100;//représente le ratio
+        if (strcmp(capteurs[i].type, "CHARGE") == 0) {
+            float div = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale)*100;
             if (div > 80.0) {
                 capteurs[i].etat = 2;
-                sprintf(capteurs[i].remarque, "Alerte JAUNE: Utilisation de %s de la capacite", div);
+                sprintf(capteurs[i].remarque, "Utilisation de %f de la capacite", div);
                 Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
                 alertes[(*nb_alr)++]=alerts;//on initialise un tableau d'alertes
             }
             else if (div > 90.0) {
                 capteurs[i].etat = 3;
-                strcpy(capteurs[i].remarque, "Alerte ROUGE: Utilisation de plus de 90% de la capacite)"); //permet de copier le texte dans la remarque
-                Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermer la circulation aux Poids-Lourds"};
+                sprintf(capteurs[i].remarque, "Utilisation de %f de la capacité", div);
+                Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "ROUGE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.90, "Fermeture circulation Poids-Lourds"};
                 alertes[(*nb_alr)++]=alerts;
             }
         }
@@ -172,27 +277,26 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
 
 // Calcul du score de déformation pondéré
 float calculer_score_deformation(Capteur capteurs[], int n) {
-    float max = 0;
-    float somme_pile = 0;
-    float somme_travee = 0;
+    float max = 0; // l'ecart maximal
+    float somme_pile = 0; //l'ecart des piles
+    float somme_travee = 0; //l'ecart des travees
 
+    //on parcoure le tableau et vérifie si le capteur est de type déformation
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "DEFORM") == 0) {
-            float ecart = 0;
             if (capteurs[i].valeur_nominale == 150) {
-                ecart = capteurs[i].valeur_mesuree;
-                somme_pile += ecart;
+                somme_pile += capteurs[i].valeur_mesuree;
             }
             if (capteurs[i].valeur_nominale == 80) {
-                ecart = capteurs[i].valeur_mesuree;
-                somme_travee += ecart;
+                somme_travee += capteurs[i].valeur_mesuree;
             }
             max += 200;
         }
     }
 
-    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.3);
-    if (max == 0) return 100;
+    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.4);
+    if (max == 0)
+        return 100;
     return 100 - ((somme_ponderee / max) * 100);
 }
 
@@ -201,47 +305,45 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
     float somme = 0;
     float max = 0;
 
+    //on parcoure le tableau et vérifie si le capteur est de type vibration
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "VIBR") == 0) {
             float ecart = 0;
-
-            if (capteurs[i].valeur_mesuree > 0.50) {
-                ecart = capteurs[i].valeur_mesuree - 0.50;
-            }
-            else if (capteurs[i].valeur_mesuree < 0.35) {
-                ecart = 0.35 - capteurs[i].valeur_mesuree;
-            }
-
+            float ideal = 0.425; //on prend le milieu de la plage donnée
+            ecart = fabs(capteurs[i].valeur_mesuree - ideal);
             somme += ecart;
-            max += 0.25;
+            max += 0.1;
         }
     }
 
-    if (max == 0) return 100;
+    if (max == 0)
+        return 100;
     return 100 - ((somme / max) * 100);
 }
 
 // Calcul du score de charge avec le pourcentage d'utilisation
 float calculer_score_charge(Capteur capteurs[], int n) {
     float somme = 0;
-    int nb_charge = 0;
+    int nb_charge = 0; //le nombre de capteur de charge
+    float utilisation; //le pourcentage de la charge utilisé
 
+    //on parcoure le tableau et vérifie si le capteur est de type charge
     for (int i = 0; i < n; i++) {
         if (strcmp(capteurs[i].type, "CHARGE") == 0) {
-            float utilisation = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale) * 100;
+                utilisation = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale) * 100;
             somme += utilisation;
             nb_charge++;
         }
     }
 
-    if (nb_charge == 0) return 100;
-
-    float max = nb_charge * 100;
-    return 100 - ((somme / max) * 100);
+    if (nb_charge == 0)
+        return 100;
+    return somme / nb_charge;
 }
 
+// Calcul de l'indice global et affichage des valeurs et des recommandations
 void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr,
-                          IndiceHealthStructural *sante) {
+                          IndiceHealthStructural *sante, FILE *f) {
     sante->score_deformation = calculer_score_deformation(capteurs, n);
     sante->score_vibration = calculer_score_vibration(capteurs, n);
     sante->score_charge = calculer_score_charge(capteurs, n);
@@ -250,30 +352,55 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
                             sante->score_vibration * 0.35 +
                             sante->score_charge * 0.25);
 
-    printf("\n========== RESUME DE SANTE STRUCTURALE ==========\n");
-    printf("Indice global (SHI) \t: %.2f / 100\n", sante->indice_global);
-    printf("  Score deformation \t: %.2f / 100\n", sante->score_deformation);
-    printf("  Score vibration \t: %.2f / 100\n", sante->score_vibration);
-    printf("  Score charge \t\t: %.2f / 100\n", sante->score_charge);
-    printf("---------------------------------------------------\n");
+    // Affichage à l'écran (si f == NULL) ou dans le fichier (si f != NULL)
+    if (f == NULL) {
+        printf("\nRESUME DE SANTE STRUCTURALE\n");
+        printf("Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);
+        printf("  Score deformation       : %.2f / 100 (40%% ponderation)\n", sante->score_deformation);
+        printf("  Score vibration         : %.2f / 100 (35%% ponderation)\n", sante->score_vibration);
+        printf("  Score charge            : %.2f / 100 (25%% ponderation)\n\n", sante->score_charge);
 
-    if (sante->indice_global >= 90) {
-        printf("Etat general \t\t: BONNE SANTE\n");
-        printf("Recommandation \t\t: Inspections annuelles\n");
-    }
-    else if (sante->indice_global >= 80) {
-        printf("Etat general \t\t: ALERTE JAUNE\n");
-        printf("Recommandation \t\t: Inspections trimestrielles\n");
-    }
-    else if (sante->indice_global >= 70) {
-        printf("Etat general \t\t: ALERTE ORANGE\n");
-        printf("Recommandation \t\t: Inspections mensuelles\n");
+        if (sante->indice_global >= 90) {
+            printf("Etat general            : BONNE SANTE\n");
+            printf("Recommandation          : Inspections annuelles\n");
+        }
+        else if (sante->indice_global >= 80) {
+            printf("Etat general            : ALERTE JAUNE\n");
+            printf("Recommandation          : Inspections trimestrielles\n");
+        }
+        else if (sante->indice_global >= 70) {
+            printf("Etat general            : ALERTE ORANGE\n");
+            printf("Recommandation          : Inspections mensuelles\n");
+        }
+        else {
+            printf("Etat general            : ALERTE ROUGE\n");
+            printf("Recommandation          : Inspection d'urgence\n");
+        }
     }
     else {
-        printf("Etat general \t\t: ALERTE ROUGE\n");
-        printf("Recommandation \t\t: Inspection d'urgence\n");
+        fprintf(f, "\nRESUME DE SANTE STRUCTURALE\n");
+        fprintf(f, "Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);
+        fprintf(f, "  Score deformation       : %.2f / 100 (40%% ponderation)\n", sante->score_deformation);
+        fprintf(f, "  Score vibration         : %.2f / 100 (35%% ponderation)\n", sante->score_vibration);
+        fprintf(f, "  Score charge            : %.2f / 100 (25%% ponderation)\n\n", sante->score_charge);
+
+        if (sante->indice_global >= 90) {
+            fprintf(f, "Etat general            : BONNE SANTE\n");
+            fprintf(f, "Recommandation          : Inspections annuelles\n");
+        }
+        else if (sante->indice_global >= 80) {
+            fprintf(f, "Etat general            : ALERTE JAUNE\n");
+            fprintf(f, "Recommandation          : Inspections trimestrielles\n");
+        }
+        else if (sante->indice_global >= 70) {
+            fprintf(f, "Etat general            : ALERTE ORANGE\n");
+            fprintf(f, "Recommandation          : Inspections mensuelles\n");
+        }
+        else {
+            fprintf(f, "Etat general            : ALERTE ROUGE\n");
+            fprintf(f, "Recommandation          : Inspection d'urgence\n");
+        }
     }
-    printf("==================================================\n");
 }
 
 //Tri à bulles groupant capteurs par type (DEFORM, VIBR, CHARGE)
