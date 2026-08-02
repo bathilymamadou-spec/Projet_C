@@ -128,7 +128,8 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
 
 //Détecte surcharges (> 80% capacité = jaune, > 90% = rouge), déséquilibre entre piles.
 void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr) {
-    float charge_nord = -1.0, charge_sud = -1.0;
+    float charge_nord = -1.0,
+    float charge_sud = -1.0;
     int idx_nord = -1;
 // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
     for (int i = 0; i < n; i++) {
