@@ -19,10 +19,10 @@ int nb_alertes = 0;
 // tableau des 24 capteurs
 Capteur capteurs[NB_CAPTEURS] = {
     // 4 capteurs de déformation piles
-    {"C01", "Pile Nord", "DEFORM", 125.3, 120.1, 150.0, 200.0, 150.0, OK, ""},
-    {"C02", "Pile Centre 1", "DEFORM", 98.5, 95.0, 150.0, 200.0, 150.0, OK, ""},
-    {"C03", "Pile Centre 2", "DEFORM", 102.4, 100.0, 150.0, 200.0, 150.0, OK, ""},
-    {"C04", "Pile Sud", "DEFORM", 115.8, 112.0, 150.0, 200.0, 150.0, OK, ""},
+    {"C01", "Pile Nord", "DEFORM", 125.3, 120.1, 150.0, 200.0, 150.0, DEFAULT, ""},
+    {"C02", "Pile Centre 1", "DEFORM", 98.5, 95.0, 150.0, 200.0, 150.0, DEFAULT, ""},
+    {"C03", "Pile Centre 2", "DEFORM", 102.4, 100.0, 150.0, 200.0, 150.0, DEFAULT, ""},
+    {"C04", "Pile Sud", "DEFORM", 115.8, 112.0, 150.0, 200.0, 150.0, DEFAULT, ""},
 
     // 4 capteurs de déformation travées
     {"C05", "Travée Nord", "DEFORM", 45.2, 43.0, 80.0, 200.0, 80.0, DEFAULT, ""},
