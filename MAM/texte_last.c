@@ -215,6 +215,16 @@ void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
         // Parcourir toutes les alertes
         for (int i = 0; i < nb_alertes; i++) {
             // affichages des ALERTE
+            printf("[%s] ALERTE %s — %s (%s) %s : %.2f (seuil : %.2f) → %s\n",
+                   alertes[i].horodatage,
+                    alertes[i].niveau,
+                    capteurs[alertes[i].num_capteur].id,
+                    capteurs[alertes[i].num_capteur].nom,
+                    alertes[i].type_alerte,
+                    alertes[i].valeur,
+                    alertes[i].seuil,
+                    alertes[i].action);
+
             fprintf(f_alert, "[%s] ALERTE %s — %s (%s) %s : %.2f (seuil : %.2f) → %s\n",
                     alertes[i].horodatage,
                     alertes[i].niveau,

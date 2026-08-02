@@ -104,7 +104,6 @@ int choix ;
             case 6:
                 rapport_inspection(capteurs, NB_CAPTEURS, alertes, nb_alertes);
 
-
                 break;
 
             case 7:
