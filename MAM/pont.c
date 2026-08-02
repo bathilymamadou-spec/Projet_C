@@ -136,7 +136,7 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
             float div = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale)*100;//représente le ratio
             if (div > 80.0) {
                 capteurs[i].etat = 2;
-                strcpy(capteurs[i].remarque, "Alerte JAUNE: Utilisation de plus de 80% de la capacite");
+                sprintf(capteurs[i].remarque, "Alerte JAUNE: Utilisation de %s de la capacite", div);
                 Alerte alerts = {"27/07/2026 10:00", i, "SURCHARGE", "JAUNE", capteurs[i].valeur_mesuree, capteurs[i].valeur_nominale * 0.80, "Diminuer les charges lourdes"};
                 alertes[(*nb_alr)++]=alerts;//on initialise un tableau d'alertes
             }
