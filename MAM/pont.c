@@ -294,7 +294,7 @@ float calculer_score_deformation(Capteur capteurs[], int n) {
         }
     }
 
-    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.4);
+    float somme_ponderee = (somme_pile * 0.7 + somme_travee * 0.3);
     if (max == 0)
         return 100;
     return 100 - ((somme_ponderee / max) * 100);
@@ -312,7 +312,7 @@ float calculer_score_vibration(Capteur capteurs[], int n) {
             float ideal = 0.425; //on prend le milieu de la plage donnée
             ecart = fabs(capteurs[i].valeur_mesuree - ideal);
             somme += ecart;
-            max += 0.1;
+            max += 0.175;
         }
     }
 

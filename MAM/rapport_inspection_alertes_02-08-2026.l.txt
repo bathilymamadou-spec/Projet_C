@@ -1,0 +1,38 @@
+======================================================
+RAPPORT D'INSPECTION
+Pont Faidherbe de Saint-Louis
+Date : alertes_02-08-2026.l
+Norme : EN 1999 (Eurocode 9) - Conception des structures en aluminium
+======================================================
+
+RESUME DE SANTE STRUCTURALE
+Indice global (SHI)       : 79.89 / 100 
+  Score deformation       : 77.09 / 100 (40% ponderation)
+  Score vibration         : 82.86 / 100 (35% ponderation)
+  Score charge            : 80.21 / 100 (25% ponderation)
+
+Etat general            : ALERTE ORANGE
+Recommandation          : Inspections mensuelles
+
+ALERTES ACTIVES
+Niveau JAUNE (5 alerte(s))
+- C13 Noeud 5 : Alerte jaune
+- C17 Pile Nord : 
+- C19 Pile Centre 2 : Utlisation 81% de la capacité
+- C20 Pile Sud : Alerte jaune
+- C23 Appui Sud : Alerte jaune
+
+Niveau ROUGE (0 alerte(s))
+  AUCUNE ALERTE
+
+CONFORMITE EUROCODE 9
+   Deformation vs limites           : OK
+   Vibration vs resonance           : OK
+   Charge vs capacite               : OK
+
+ACTIONS PRIORITAIRES
+AUCUNE ACTION PRIORITAIRE
+
+======================================================
+FIN DU RAPPORT
+======================================================

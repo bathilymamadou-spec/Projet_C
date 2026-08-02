@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <time.h> // permet d'obtenir la date du jour
 #include "pont.h"
 #define NB_CAPTEURS 24
 #define NB_ALERTES_MAX 50
@@ -16,13 +16,40 @@ const char* conformite_cap(int valide) {
 
 void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr) {
     IndiceHealthStructural sante;
+    for (int i = 0; i < n; i++){
+        if (capteurs[i].etat == DEFAULT){
+            perror("Les capteurs n'ont pas encore d'etat. Veuillez les valider.");
+            return;
+    }
+    }
 
     // Remplir RapportInspection
     RapportInspection rapport;
 
-    strcpy(rapport.date, "01-08-2024");
+    long t = time(NULL); //on stocke le temps actuelle en seconde
+    struct tm *tm = localtime(&t); //on convertit la structure dans un format lisible
+
+    sprintf(rapport.date,
+            "alertes_%02d-%02d-%04d.log",
+            tm->tm_mday,
+            tm->tm_mon + 1,
+            tm->tm_year + 1900);
     rapport.nb_capteurs = n;
     rapport.nb_alertes = nb_alr;
+
+
+    rapport.nb_capteurs = n;
+    rapport.nb_alertes = nb_alr;
+
+
+    // Créer le nom du fichier avec la date du jour
+    char nom_fichier[50];
+     //on ecrit dans la chaine de caractère
+    sprintf(nom_fichier,
+            "rapport_inspection_%02d-%02d-%04d.txt",
+            tm->tm_mday,
+            tm->tm_mon + 1,
+            tm->tm_year + 1900);
 
     // Copier les capteurs
     for (int i = 0; i < n; i++) {
@@ -34,9 +61,6 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
         rapport.alertes[i] = alertes[i];
     }
 
-    // Nom du fichier
-    char nom_fichier[50];
-    sprintf(nom_fichier, "rapport_inspection_%s.txt", rapport.date);
 
     // Ouvrir le fichier
     FILE *f = fopen(nom_fichier, "w");
@@ -164,13 +188,47 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
 }
 
 void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
-FILE *f_alert = fopen("alertes_01-08-2024", "w");
+
+        long t = time(NULL); //on stocke le temps actuelle en seconde
+    struct tm *tm = localtime(&t); //on convertit la structure dans un format lisible
+
+    // Créer le nom du fichier avec la date du jour
+    char nom_fichier[50];
+     //on ecrit dans la chaine de caractère
+    sprintf(nom_fichier,
+            "alertes_%02d-%02d-%04d.log",
+            tm->tm_mday,
+            tm->tm_mon + 1,
+            tm->tm_year + 1900);
+
+    // Ouvrir le fichier en mode ajout (append)
+    FILE *f_alert = fopen(nom_fichier, "a");
     if (f_alert == NULL) {
         perror("fopen");
         return;
     }
-    for (int i = 0; i < n; i++) {
-            fprintf(f_alert, "- %s %s : %s\n", capteurs[i].id, capteurs[i].nom, capteurs[i].remarque);
+
+    // Vérifier s'il y a des alertes
+    if (nb_alertes == 0) {
+        fprintf(f_alert, "[%s] AUCUNE ALERTE\n", "00:00");
+    } else {
+        // Parcourir toutes les alertes
+        for (int i = 0; i < nb_alertes; i++) {
+            // affichages des ALERTE
+            fprintf(f_alert, "[%s] ALERTE %s — %s (%s) %s : %.2f (seuil : %.2f) → %s\n",
+                    alertes[i].horodatage,
+                    alertes[i].niveau,
+                    capteurs[alertes[i].num_capteur].id,
+                    capteurs[alertes[i].num_capteur].nom,
+                    alertes[i].type_alerte,
+                    alertes[i].valeur,
+                    alertes[i].seuil,
+                    alertes[i].action);
         }
-    printf("Fichier alerte généré");
+    }
+
+    // Fermer le fichier
+    fclose(f_alert);
+
+    printf("Fichier alerte genere : alertes_01-08-2024.log\n");
 }
