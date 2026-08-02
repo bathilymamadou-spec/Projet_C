@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "pont.h"
 #define NB_CAPTEURS 24
 #define NB_ALERTES_MAX 50
@@ -59,58 +60,68 @@ int choix ;
             case 1:
                 if (!charger_donnees_mesures(capteurs, NB_CAPTEURS, "mesures_capteurs.txt")) {
                     printf("Note : Fichier 'mesures_capteurs.txt' introuvable.\n");
-                } else {
+                }
+                else {
                     printf("Donnees de mesures chargees avec succes !\n");
+                    sleep(2);
                 }
                 break;
 
             case 2:
                printf("\n--- Validation des Capteurs ---\n");
                for (int i = 0; i < NB_CAPTEURS; i++) {
-                   if (!valider_capteur(&capteurs[i])) {
-                       printf("[ERREUR MATÉRIELLE] Capteur %s (%s) hors plages physiques! Valeur = %.2f\n",
-                       capteurs[i].id, capteurs[i].nom, capteurs[i].valeur_mesuree);
+                   if (!valider_capteur(&capteurs[i])){
+                       printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
+                    }
+                    else{
+                        printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
                     }
                 }
-                printf("Validation physique achevée.\n");
+                printf("\nValidation terminee.\n");
+                sleep(2);
+
                 sauvegarder_capteurs_binaire(capteurs, NB_CAPTEURS, "capteurs.dat");
                 break;
 
             case 3:
                 trier_capteurs_par_type(capteurs, NB_CAPTEURS);
+
+                printf("\n%-6s %-16s %-8s %-10s %-8s %-10s\n", "ID", "Nom", "Type", "Valeur", "Etat", "Remarque");
+                printf("--------------------------------------------------------------------\n");
+                for (int i = 0; i < NB_CAPTEURS; i++){
+                    printf("%-6s|%-16s %-8s %-10.2f %-8d %-10s\n", capteurs[i].id, capteurs[i].nom, capteurs[i].type, capteurs[i].valeur_mesuree, capteurs[i].etat, capteurs[i].remarque);
+                }
+                printf("--------------------------------------------------------------------\n");
+                sleep(2);
                 break;
-
-
-
-
-
-
-
-
-
 
             case 4:
                 nb_alertes = 0; // Réinitialisation
                 detecter_anomalies_vibration(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
+                detecter_anomalies_deformation(capteurs, NB_CAPTEURS,alertes, &nb_alertes);
                 detecter_anomalies_charge(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
-                printf("Analyse effectuée. %d alerte(s) détectée(s) et archivée(s).\n", nb_alertes);
+                printf("Analyse effectuee. %d alerte(s) detectee(s) et archivee(s).\n", nb_alertes);
+                sleep(2);
                 break;
 
             case 5:
                 calculer_indice_sante(capteurs, NB_CAPTEURS, alertes, nb_alertes, &sante, NULL);
-
+                sleep(2);
                 break;
 
             case 6:
-                rapport_inspection(capteurs, NB_CAPTEURS, alertes, nb_alertes);
 
+
+                sleep(2);
                 break;
 
             case 7:
-
+                sleep(2);
                 break;
 
             case 8:
+
+                sleep(2);
                 alertes_jour(capteurs, NB_CAPTEURS, alertes, nb_alertes);
                 break;
 
@@ -120,11 +131,12 @@ int choix ;
 
             default:
                 printf("Choix invalide. Réessayez.\n");
+                sleep(2);
         }
     } while (choix != 9);
 
 
-rapport_inspection(capteurs, NB_CAPTEURS,alertes, 2);
+
     return 0;
 }
 
