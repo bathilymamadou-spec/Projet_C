@@ -86,8 +86,6 @@ int valider_capteur(Capteur *cap){
     }
 }
 
-
-
 void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
     const char *DATE_COURANTE="30-07-2026 18:00"; // Exemple d'horodatage courant
     for(int i=0; i<n; i++){
@@ -203,38 +201,8 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr) {
-    float charge_nord = -1.0,
-    float charge_sud = -1.0;
+    float charge_nord = -1.0, charge_sud = -1.0;
     int idx_nord = -1;
 // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
     for (int i = 0; i < n; i++) {

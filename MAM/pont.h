@@ -80,50 +80,11 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
 void trier_capteurs_par_type(Capteur capteurs[], int n);
 
 //Recherche séquentielle du capteur avec l'état le plus grave (ROUGE prioritaire).
-
 Capteur* recherche_capteur_critique(Capteur capteurs[], int n);
 
 
 //Affiche menu principal
 void afficher_menu();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //Prototypes fonctions création de fichiers
 void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr);
