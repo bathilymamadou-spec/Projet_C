@@ -59,7 +59,7 @@ int choix ;
                 if (!charger_donnees_mesures(capteurs, NB_CAPTEURS, "mesures_capteurs.txt")) {
                     printf("Note : Fichier 'mesures_capteurs.txt' introuvable.\n");
                 } else {
-                    printf("Données de mesures chargées avec succès !\n");
+                    printf("Donnees de mesures chargees avec succes !\n");
                 }
                 break;
 
