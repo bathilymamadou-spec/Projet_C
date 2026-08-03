@@ -37,6 +37,7 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="mesure_capteur.txt" />
 		<Unit filename="pont.c">
 			<Option compilerVar="CC" />
 		</Unit>
