@@ -5,6 +5,7 @@
 #include <time.h> // permet d'obtenir la date du jour
 #include "pont.h"
 
+
 //On vérfie si les mesures du capteur sont valides
 int valider_capteur(Capteur *cap){
 
@@ -46,6 +47,7 @@ int valider_capteur(Capteur *cap){
         }
         else{
             if (cap->valeur_mesuree>0.60f || cap->valeur_mesuree<0.30f) {
+
                 cap->etat = ROUGE;
                 strcpy(cap->remarque, "ALERTE ROUGE: Fréquence hors plage");
             }
@@ -89,6 +91,7 @@ int valider_capteur(Capteur *cap){
     }
 }
 
+
 //On vérfie les anomalies de la déformation
 void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
     time_t t = time(NULL);
@@ -117,6 +120,7 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
             alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }
+
         // --- CAS ROUGE : Saut important (> 25 µm/m) ---
         else if (saut > 25.0f) {
             Alerte alr;
@@ -130,6 +134,7 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
             alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }
+
         // --- CAS JAUNE : Saut moderé (> 10 µm/m) ---
         else if (saut > 10.0f) {
             Alerte alr;
@@ -145,6 +150,7 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
             (*nb_alr)++;
         }
     }
+
     // ---  DÉTECTION D'ASYMÉTRIE (Fissuration / Comportement anormal entre capteurs) ---
     // Exemple : Comparaison entre C06 (Travée Centre-N, index 5) et C07 (Travée Centre-S, index 6)
     int T_centre_n = 5; // C06
@@ -198,6 +204,7 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
             alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }
+
         // --- CAS JAUNE : Dérive de fréquence (0.51 Hz à 0.60 Hz) ---
         else if (freq >= 0.51f && freq <= 0.60f) {
             Alerte alr;
@@ -279,12 +286,16 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
         if (ecart > 100.0) {
             Alerte al_des;
             strcpy(al_des.horodatage, DATE_COURANTE);
+<<<<<<< HEAD
             al_des.num_capteur = i;
+=======
+            al_des.num_capteur = idx_nord;
+>>>>>>> ff51f34071b74e283c4b4c13d133ec5e4c526f21
             strcpy(al_des.type_alerte, "SURCHARGE");
             strcpy(al_des.niveau, "JAUNE");
             al_des.valeur = ecart;
             al_des.seuil = 100.0;
-            strcpy(alr.action, "Verification de charge entre Pile Nord et Pile Sud");
+            strcpy(al_des.action, "Verification de charge entre Pile Nord et Pile Sud");
             alertes[*nb_alr] = al_des;//on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }
