@@ -64,6 +64,9 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
 //Détecte surcharges (> 80% capacité = jaune, > 90% = rouge), déséquilibre entre piles.
 void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr);
 
+//Détecte toutes les anomalies en une fois
+void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr);
+
 //Calcule le score de déformation (0 - 100) en fonction des écarts. Pondération : piles vs travées
 float calculer_score_deformation(Capteur capteurs[], int n);
 

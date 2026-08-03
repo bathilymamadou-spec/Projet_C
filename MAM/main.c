@@ -79,6 +79,7 @@ int choix ;
                }
                 if (nbr==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+
                 }
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
@@ -141,15 +142,16 @@ int choix ;
 
             case 4:
                 nb_alertes = 0; // Réinitialisation
-                detecter_anomalies_vibration(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
-                detecter_anomalies_deformation(capteurs, NB_CAPTEURS,alertes, &nb_alertes);
-                detecter_anomalies_charge(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
+                detecter_anomalies(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
+                if (nb_alertes == 0)
+                    printf("\nAnalyse effectuee. %d alerte(s) detectee(s) et archivee(s).\n", nb_alertes);
+                else
+                    printf("\nAnalyse effectuee. %d alerte(s) detectee(s) et archivee(s).\n", nb_alertes);
                 sleep(2);
                 break;
 
             case 5:
                 calculer_indice_sante(capteurs, NB_CAPTEURS, alertes, nb_alertes, &sante, NULL);
-                printf("--------------------------------------------------------------------\n");
                 sleep(2);
                 break;
 
