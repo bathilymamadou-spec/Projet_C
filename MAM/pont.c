@@ -286,11 +286,7 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
         if (ecart > 100.0) {
             Alerte al_des;
             strcpy(al_des.horodatage, DATE_COURANTE);
-<<<<<<< HEAD
-            al_des.num_capteur = i;
-=======
             al_des.num_capteur = idx_nord;
->>>>>>> ff51f34071b74e283c4b4c13d133ec5e4c526f21
             strcpy(al_des.type_alerte, "SURCHARGE");
             strcpy(al_des.niveau, "JAUNE");
             al_des.valeur = ecart;
@@ -383,7 +379,7 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
                             sante->score_vibration * 0.35 +
                             sante->score_charge * 0.25);
 
-    // Affichage à l'écran (si f == NULL) ou dans le fichier (si f != NULL)
+    // Affichage à l'écran (si f == NULL)
     if (f == NULL) {
         printf("\nRESUME DE SANTE STRUCTURALE\n");
         printf("Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);
@@ -408,6 +404,8 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
             printf("Recommandation          : Inspection d'urgence\n");
         }
     }
+
+    // On affiche dans le fichier (si f != NULL)
     else {
         fprintf(f, "\nRESUME DE SANTE STRUCTURALE\n");
         fprintf(f, "Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);

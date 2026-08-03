@@ -6,7 +6,7 @@
 	<unistd.h>
 	"pont.h"
 
-1785722342 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.c
+1785788922 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -41,4 +41,6 @@
 	<string.h>
 	<time.h>
 	"pont.h"
+
+1785694787 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/fichier.c
 
