@@ -290,6 +290,7 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                }
                 if (nbr==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+                    return;
                 }
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
@@ -382,6 +383,46 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
 
 }
 
+//fonction de detections des anomalies
+void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
+    int nbr = 0;
+    // 1. Compter les capteurs qui ont des valeurs
+    for (int i = 0; i < n; i++){
+        if (capteurs[i].valeur_mesuree != 0.0){
+            nbr++;
+        }
+    }
+
+    // 2. Vérifier que les données sont chargées
+    if (nbr == 0){
+        printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+        return;
+    }
+
+    // 3. Valider chaque capteur
+    for (int i = 0; i < n; i++){
+        if (capteurs[i].valeur_mesuree != 0.0){
+            if (!valider_capteur(&capteurs[i])){
+                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n",
+                       capteurs[i].id, capteurs[i].nom, capteurs[i].valeur_mesuree);
+                return;
+            }
+            else{
+                printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "valide");
+
+            }
+        }
+        else{
+            printf("Ce capteur n'a pas encore de valeurs. Veuillez charger ses donnees.\n");
+        }
+    }
+
+    // 4. Détecter les anomalies
+    detecter_anomalies_vibration(capteurs, n, alertes, nb_alr);
+    detecter_anomalies_deformation(capteurs, n, alertes, nb_alr);
+    detecter_anomalies_charge(capteurs, n, alertes, nb_alr);
+
+}
 
 // Calcul du score de déformation pondéré
 float calculer_score_deformation(Capteur capteurs[], int n) {
@@ -463,19 +504,24 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
                }
                 if (nbr==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+                    return;
                 }
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
                        if (capteurs[i].valeur_mesuree!=DEFAULT){
                            if (!valider_capteur(&capteurs[i])){
                                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
+                               return;
+
                             }
                             else{
                                 printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
+
                             }
                        }
                         else{
                             printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            return;
                         }
                    }
 
@@ -676,23 +722,27 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
                }
                 if (nbr==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+                    return;
                 }
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
                        if (capteurs[i].valeur_mesuree!=DEFAULT){
                            if (!valider_capteur(&capteurs[i])){
                                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
+                               return;
                             }
                             else{
                                 printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
+                                return;
                             }
                        }
                         else{
                             printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            return;
                         }
                    }
 
-
+        return;
                 }
 
     // Remplir RapportInspection
