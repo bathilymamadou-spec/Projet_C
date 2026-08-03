@@ -18,22 +18,21 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
     IndiceHealthStructural sante;
     for (int i = 0; i < n; i++){
         if (capteurs[i].etat == DEFAULT){
-            perror("Les capteurs n'ont pas encore d'etat. Veuillez les valider.");
+            perror("Les capteurs n'ont pas encore d'etat. \nVeuillez les valider avec 2.");
             return;
     }
     }
 
-    // Remplir RapportInspection
+    // Remplir struc RapportInspection
     RapportInspection rapport;
-
-    long t = time(NULL); //on stocke le temps actuelle en seconde
+    time_t t = time(NULL); //on stocke le temps actuelle en seconde
     struct tm *tm = localtime(&t); //on convertit la structure dans un format lisible
-
+    ////on ecrit dans la chaine de caractère date/**<  */
     sprintf(rapport.date,
             "alertes_%02d-%02d-%04d.log",
             tm->tm_mday,
-            tm->tm_mon + 1,
-            tm->tm_year + 1900);
+            tm->tm_mon + 1, //tm->tm_mon commence à zero
+            tm->tm_year + 1900); // tm->tm_year est la différence entre l'année actuelle et 1900
     rapport.nb_capteurs = n;
     rapport.nb_alertes = nb_alr;
 
@@ -225,7 +224,7 @@ void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
                     alertes[i].seuil,
                     alertes[i].action);
 
-            fprintf(f_alert, "[%s] ALERTE %s — %s (%s) %s : %.2f (seuil : %.2f) → %s\n",
+            fprintf(f_alert, "[%s] ALERTE %s - %s (%s) %s : %.2f (seuil : %.2f) → %s\n",
                     alertes[i].horodatage,
                     alertes[i].niveau,
                     capteurs[alertes[i].num_capteur].id,
@@ -237,7 +236,6 @@ void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
         }
     }
 
-    // Fermer le fichier
     fclose(f_alert);
 
     printf("Fichier alerte genere : %s\n", nom_fichier);
