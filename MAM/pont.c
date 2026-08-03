@@ -532,7 +532,7 @@ int charger_donnees_mesures(Capteur capteurs[], int n){
 //sauvegarde du tableau de structure
 int sauvegarder_capteurs_binaire(Capteur capteurs[], int n){
     char nom_fichier[50];
-    strcpy(nom_fichier, "mesures_capteurs.txt");
+    strcpy(nom_fichier, "capteurs.dat");
     FILE *f = fopen(nom_fichier, "wb");
     if (f == NULL){
         perror("Erreur d'ouverture du fichier");
