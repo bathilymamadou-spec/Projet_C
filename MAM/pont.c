@@ -278,7 +278,7 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
         if (ecart < 0) ecart = -ecart; // Valeur absolue
         if (ecart > 100.0) {
             Alerte al_des;
-            strcpy(alr.horodatage, DATE_COURANTE);
+            strcpy(al_des.horodatage, DATE_COURANTE);
             al_des.num_capteur = i;
             strcpy(al_des.type_alerte, "SURCHARGE");
             strcpy(al_des.niveau, "JAUNE");

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1785711070 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/main.c
+1785786287 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -14,7 +14,7 @@
 	<time.h>
 	"pont.h"
 
-1785722342 /home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.h
+1785786287 /home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.h
 
 1785783915 source:c:\users\hp\projet_c\mam\main.c
 	<stdio.h>
