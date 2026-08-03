@@ -379,7 +379,7 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
                             sante->score_vibration * 0.35 +
                             sante->score_charge * 0.25);
 
-    // Affichage à l'écran (si f == NULL) ou dans le fichier (si f != NULL)
+    // Affichage à l'écran (si f == NULL)
     if (f == NULL) {
         printf("\nRESUME DE SANTE STRUCTURALE\n");
         printf("Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);
@@ -404,6 +404,8 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
             printf("Recommandation          : Inspection d'urgence\n");
         }
     }
+
+    // On affiche dans le fichier (si f != NULL)
     else {
         fprintf(f, "\nRESUME DE SANTE STRUCTURALE\n");
         fprintf(f, "Indice global (SHI)       : %.2f / 100 \n", sante->indice_global);

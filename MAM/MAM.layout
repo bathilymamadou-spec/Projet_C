@@ -2,51 +2,24 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-<<<<<<< HEAD
-	<File name="fichier.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-=======
-	<File name="main.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4174" topLine="63" />
-		</Cursor>
-	</File>
-	<File name="texte_last.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6554" topLine="144" />
-		</Cursor>
-	</File>
 	<File name="pont.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
->>>>>>> 7d216de36790b6f1e9916062161b88b62fc27fe2
+		<Cursor>
+			<Cursor1 position="89" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="mesures_capteurs.txt" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="0" topLine="0" />
 		</Cursor>
-<<<<<<< HEAD
 	</File>
-	<File name="pont.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
+	<File name="main.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1691" topLine="24" />
+			<Cursor1 position="4030" topLine="79" />
 		</Cursor>
 	</File>
-	<File name="mesures_capteurs.txt" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="pont.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1292" topLine="0" />
+			<Cursor1 position="16519" topLine="379" />
 		</Cursor>
-	</File>
-	<File name="pont.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="-3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="102" topLine="288" />
-		</Cursor>
-	</File>
-	<File name="main.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7483" topLine="0" />
-		</Cursor>
-=======
->>>>>>> 7d216de36790b6f1e9916062161b88b62fc27fe2
-		<Folding>
-			<Collapse line="10" />
-			<Collapse line="19" />
-			<Collapse line="54" />
-		</Folding>
 	</File>
 </CodeBlocks_layout_file>
