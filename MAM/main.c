@@ -142,11 +142,13 @@ int choix ;
 
             case 4:
                 nb_alertes = 0; // Réinitialisation
+
                 detecter_anomalies(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
                 if (nb_alertes == 0)
                     printf("\nAnalyse effectuee. %d alerte(s) detectee(s) et archivee(s).\n", nb_alertes);
                 else
                     printf("\nAnalyse effectuee. %d alerte(s) detectee(s) et archivee(s).\n", nb_alertes);
+
                 sleep(2);
                 break;
 
