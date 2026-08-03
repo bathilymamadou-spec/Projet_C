@@ -69,7 +69,7 @@ int choix ;
                         nbr++;
                     }
                }
-                if (nbr=0){
+                if (nbr==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
                 }
                 else{
