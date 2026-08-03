@@ -5,74 +5,72 @@
 #include <time.h> // permet d'obtenir la date du jour
 #include "pont.h"
 
-
-//Vérifie la cohérence et la plage physique du capteur. Retourne 1 si OK, 0 sinon
+//On vérfie si les mesures du capteur sont valides
 int valider_capteur(Capteur *cap){
 
     // --- CASE 1 : CAPTEURS DE DÉFORMATION ---
     if (strcmp(cap->type, "DEFORM")==0){
-        // 1. Vérification de la cohérence physique selon le type de capteur
+        // Vérification de la cohérence physique selon le type de capteur
             // Une déformation aberrante dépasserait largement les plages physiques admissibles
         if (cap->valeur_mesuree<-700 || cap->valeur_mesuree>700){
             strcpy(cap->remarque, "ERREUR: Signal hors plage physique");
             return 0;
         }
-        // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
+        // Évaluation de l'état et rédaction de la remarque
         else{
             float saut=fabsf(cap->valeur_mesuree-cap->valeur_precedente);
             if (fabsf(cap->valeur_mesuree)>200 || saut>25.0f){
-                cap->etat=ROUGE; // ROUGE
+                cap->etat=ROUGE;
                 strcpy(cap->remarque, "ALERTE ROUGE: Seuil critique");
             }
             else if (saut>10.0f){
-                cap->etat=JAUNE; // JAUNE
+                cap->etat=JAUNE;
                 strcpy(cap->remarque, "ALERTE JAUNE: Augmentation du saut");
             }
             else{
-                cap->etat=OK; // OK
+                cap->etat=OK;
                 strcpy(cap->remarque, "OK: Deformation normale");
             }
-            return 1; // Mesure valide
+            return 1;
         }
     }
 
 
     // --- CASE 2 : CAPTEURS DE VIBRATION ---
     if (strcmp(cap->type, "VIBR")==0){
-    // 1. Vérification de la cohérence physique selon le type de capteur
+    // Vérification de la cohérence physique selon le type de capteur
         // Une fréquence de vibration ne peut pas être négative ou exagérément élevée
         if (cap->valeur_mesuree<0 || cap->valeur_mesuree>2){
             strcpy(cap->remarque, "ERREUR: Signal de vibration incoherent");
             return 0;
         }
-    // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
         else{
             if (cap->valeur_mesuree>0.60f || cap->valeur_mesuree<0.30f) {
-                cap->etat = ROUGE; // ROUGE
-                strcpy(cap->remarque, "ALERTE ROUGE: Frequence hors plage");
+                cap->etat = ROUGE;
+                strcpy(cap->remarque, "ALERTE ROUGE: Fréquence hors plage");
             }
             else if (cap->valeur_mesuree>=0.51f && cap->valeur_mesuree<=0.60f) {
-                cap->etat=JAUNE;// JAUNE
-                strcpy(cap->remarque, "ALERTE JAUNE: Augmentation de la frequence");
+                cap->etat=JAUNE;
+                strcpy(cap->remarque, "ALERTE JAUNE: Augmentation de la fréquence");
             }
             else {
-                cap->etat=OK; // OK
-                strcpy(cap->remarque, "OK: Frequence normale");
+                cap->etat=OK;
+                strcpy(cap->remarque, "OK: Fréquence normale");
             }
-            return 1; // Mesure valide
+            return 1;
         }
     }
 
 
     // --- CASE 3 : CAPTEURS DE CHARGE ---
     if (strcmp(cap->type, "CHARGE")==0){
-    // 1. Vérification de la cohérence physique selon le type de capteur
+    // Vérification de la cohérence physique selon le type de capteur
         // Une charge ne peut pas être négative ou dépasser largement la capacité critique
         if (cap->valeur_mesuree<0 || cap->valeur_mesuree>5000){
             strcpy(cap->remarque, "ERREUR: Valeur de charge absurde");
             return 0;
         }
-    // 2. Évaluation de l'état (OK, JAUNE, ROUGE) et rédaction de la remarque
+    // Évaluation de l'état et rédaction de la remarque
         else{
             if (cap->valeur_mesuree>cap->seuil_alerte_r) {
                 cap->etat = ROUGE; // ROUGE
@@ -91,8 +89,7 @@ int valider_capteur(Capteur *cap){
     }
 }
 
-
-//Détecte déformations croissantes (saut > 10 μm/m = alerte jaune, > 25 μm/m = alerte rouge), fissuration (asymétrie entre capteurs)
+//On vérfie les anomalies de la déformation
 void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
     time_t t = time(NULL);
     struct tm *now = localtime(&t);
@@ -107,7 +104,7 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
         float mesure = capteurs[i].valeur_mesuree;
         float precedente = capteurs[i].valeur_precedente;
         float saut = fabsf(mesure - precedente);
-        // --- 1. CAS CRITIQUE : Déformation unilatérale > 200 µm/m (Seuil de fissuration) ---
+        // ---  CAS CRITIQUE : Déformation unilatérale > 200 µm/m (Seuil de fissuration) ---
         if (fabsf(mesure) > 200.0f) {
             Alerte alr;
             strcpy(alr.horodatage, DATE_COURANTE);
@@ -120,8 +117,7 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
             alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }
-
-        // --- 2. CAS ROUGE : Saut important (> 25 µm/m) ---
+        // --- CAS ROUGE : Saut important (> 25 µm/m) ---
         else if (saut > 25.0f) {
             Alerte alr;
             strcpy(alr.horodatage, DATE_COURANTE);
@@ -134,8 +130,7 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
             alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }
-
-        // --- 3. CAS JAUNE : Saut moderé (> 10 µm/m) ---
+        // --- CAS JAUNE : Saut moderé (> 10 µm/m) ---
         else if (saut > 10.0f) {
             Alerte alr;
             strcpy(alr.horodatage, DATE_COURANTE);
@@ -150,8 +145,7 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
             (*nb_alr)++;
         }
     }
-
-    // --- 4. DÉTECTION D'ASYMÉTRIE (Fissuration / Comportement anormal entre capteurs) ---
+    // ---  DÉTECTION D'ASYMÉTRIE (Fissuration / Comportement anormal entre capteurs) ---
     // Exemple : Comparaison entre C06 (Travée Centre-N, index 5) et C07 (Travée Centre-S, index 6)
     int T_centre_n = 5; // C06
     int T_centre_s = 6; // C07
@@ -191,7 +185,7 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
 
         float freq = capteurs[i].valeur_mesuree;
 
-        // --- 1. CAS ROUGE : Fréquence hors limites critiques (< 0.30 Hz ou > 0.60 Hz) ---
+        // ---  CAS ROUGE : Fréquence hors limites critiques (< 0.30 Hz ou > 0.60 Hz) ---
         if (freq > 0.60f || freq < 0.30f) {
             Alerte alr;
             strcpy(alr.horodatage, DATE_COURANTE);
@@ -204,8 +198,7 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
             alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }
-
-        // --- 2. CAS JAUNE : Dérive de fréquence (0.51 Hz à 0.60 Hz) ---
+        // --- CAS JAUNE : Dérive de fréquence (0.51 Hz à 0.60 Hz) ---
         else if (freq >= 0.51f && freq <= 0.60f) {
             Alerte alr;
             strcpy(alr.horodatage, DATE_COURANTE);
