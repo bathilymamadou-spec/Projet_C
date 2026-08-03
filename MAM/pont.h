@@ -91,9 +91,9 @@ void afficher_menu();
 //Prototypes fonctions création de fichiers
 void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr);
 
-int charger_donnees_mesures(Capteur capteurs[], int n, const char *nom_fichier);
+int charger_donnees_mesures(Capteur capteurs[], int n);
 
-int sauvegarder_capteurs_binaire(Capteur capteurs[], int n, const char *nom_fichier);
+int sauvegarder_capteurs_binaire(Capteur capteurs[], int n);
 
 void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes);
 

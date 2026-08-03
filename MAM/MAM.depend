@@ -16,23 +16,24 @@
 
 1785722342 /home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.h
 
-1785707349 source:c:\users\hp\projet_c\mam\main.c
+1785783915 source:c:\users\hp\projet_c\mam\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<unistd.h>
 	"pont.h"
 
-1785706492 source:c:\users\hp\projet_c\mam\pont.c
+1785781884 source:c:\users\hp\projet_c\mam\pont.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<math.h>
+	<time.h>
 	"pont.h"
 
-1785702258 c:\users\hp\projet_c\mam\pont.h
+1785767044 c:\users\hp\projet_c\mam\pont.h
 
-1785618658 source:c:\users\hp\projet_c\mam\fichier.c
+1785723977 source:c:\users\hp\projet_c\mam\fichier.c
 
 1785717163 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/texte_last.c
 	<stdio.h>

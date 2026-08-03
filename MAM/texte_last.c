@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h> // permet d'obtenir la date du jour
-#include "pont.h"
-#define NB_CAPTEURS 24
-#define NB_ALERTES_MAX 50
 
 // Fonction pour la conformité (en dehors de rapport_inspection)
 const char* conformite_cap(int valide) {
