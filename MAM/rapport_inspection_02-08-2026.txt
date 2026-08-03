@@ -17,18 +17,24 @@ Recommandation          : Inspections mensuelles
 ALERTES ACTIVES
 Niveau JAUNE (5 alerte(s))
 <<<<<<< HEAD
+<<<<<<< HEAD
 - C13 Noeud 5 : ALERTE JAUNE: Augmentation de la frequence
 - C17 Pile Nord : Utilisation de 81.666664 de la capacite
 - C19 Pile Centre 2 : Utilisation de 80.333336 de la capacite
 - C20 Pile Sud : Utilisation de 81.333336 de la capacite
 - C23 Appui Sud : Utilisation de 80.666664 de la capacite
 =======
+=======
+>>>>>>> 7d216de36790b6f1e9916062161b88b62fc27fe2
 - C13 Noeud 5 : ALERTE JAUNE: Augmentation de la fréquence
 - C17 Pile Nord : ALERTE JAUNE: Surcharge modèréé
 - C19 Pile Centre 2 : ALERTE JAUNE: Surcharge modèréé
 - C20 Pile Sud : ALERTE JAUNE: Surcharge modèréé
 - C23 Appui Sud : ALERTE JAUNE: Surcharge modèréé
+<<<<<<< HEAD
 >>>>>>> c81e0d2c9bd282ed9bf627c1d41b7730a4e6dbc9
+=======
+>>>>>>> 7d216de36790b6f1e9916062161b88b62fc27fe2
 
 Niveau ROUGE (0 alerte(s))
   AUCUNE ALERTE
@@ -40,6 +46,7 @@ CONFORMITE EUROCODE 9
 
 ACTIONS PRIORITAIRES
 <<<<<<< HEAD
+<<<<<<< HEAD
 1. Alerte Jaune: Derive de frequence observee (augmentation de raideur)
 2. Diminuer les charges lourdes
 3. Diminuer les charges lourdes
@@ -48,6 +55,9 @@ ACTIONS PRIORITAIRES
 =======
 AUCUNE ACTION PRIORITAIRE
 >>>>>>> c81e0d2c9bd282ed9bf627c1d41b7730a4e6dbc9
+=======
+AUCUNE ACTION PRIORITAIRE
+>>>>>>> 7d216de36790b6f1e9916062161b88b62fc27fe2
 
 ======================================================
 FIN DU RAPPORT

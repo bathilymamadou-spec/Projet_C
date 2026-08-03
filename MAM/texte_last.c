@@ -1,6 +1,9 @@
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 7d216de36790b6f1e9916062161b88b62fc27fe2
 // Fonction pour la conformité (en dehors de rapport_inspection)
 const char* conformite_cap(int valide) {
     if (valide == 1)
@@ -235,4 +238,7 @@ void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
 
     printf("Fichier alerte genere : %s\n", nom_fichier);
 }
+<<<<<<< HEAD
 >>>>>>> c81e0d2c9bd282ed9bf627c1d41b7730a4e6dbc9
+=======
+>>>>>>> 7d216de36790b6f1e9916062161b88b62fc27fe2
