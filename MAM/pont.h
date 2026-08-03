@@ -1,6 +1,7 @@
 #ifndef PONT_H_INCLUDED
 #define PONT_H_INCLUDED
 
+//Enumeration pour les états du capteur
 typedef enum{
     DEFAULT, //etat initial du capteur
     OK,
