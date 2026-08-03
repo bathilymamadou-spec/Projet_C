@@ -8,7 +8,6 @@ typedef enum{
     JAUNE,
     ROUGE
 }etat;
-
 typedef struct{
 char id[6]; /* ex: "C01", "C15" */
 char nom[40]; /* ex: "Pile Nord" */
@@ -87,6 +86,7 @@ Capteur* recherche_capteur_critique(Capteur capteurs[], int n);
 
 //Affiche menu principal
 void afficher_menu();
+void viderBuffer(void);
 
 //Prototypes fonctions création de fichiers
 void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr);

@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1785711070 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/main.c
+1785792706 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<unistd.h>
 	"pont.h"
 
-1785722342 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.c
+1785793553 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -14,16 +14,16 @@
 	<time.h>
 	"pont.h"
 
-1785722342 /home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.h
+1785790922 /home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/pont.h
 
-1785793379 source:c:\users\hp\projet_c\mam\main.c
+1785795778 source:c:\users\hp\projet_c\mam\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<unistd.h>
 	"pont.h"
 
-1785788956 source:c:\users\hp\projet_c\mam\pont.c
+1785795778 source:c:\users\hp\projet_c\mam\pont.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -31,7 +31,7 @@
 	<time.h>
 	"pont.h"
 
-1785784631 c:\users\hp\projet_c\mam\pont.h
+1785796707 c:\users\hp\projet_c\mam\pont.h
 
 1785723977 source:c:\users\hp\projet_c\mam\fichier.c
 
@@ -41,4 +41,6 @@
 	<string.h>
 	<time.h>
 	"pont.h"
+
+1785694787 source:/home/mbathily/Documents/Informatique/Langage_C/Projet_C/Projet_C/MAM/fichier.c
 
