@@ -56,3 +56,12 @@
 [3-8-2026 20:40:19] ALERTE JAUNE - C19 (Pile Centre 2) SURCHARGE : 2410.00 (seuil : 2400.00) -> Diminuer les charges lourdes
 [3-8-2026 20:40:19] ALERTE JAUNE - C20 (Pile Sud) SURCHARGE : 2440.00 (seuil : 2400.00) -> Diminuer les charges lourdes
 [3-8-2026 20:40:19] ALERTE JAUNE - C23 (Appui Sud) SURCHARGE : 1210.00 (seuil : 1200.00) -> Diminuer les charges lourdes
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 1) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 2) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 3) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 4) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 5) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 6) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 7) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[3-8-2026 21:8:12] ALERTE ROUGE -  (Noeud 8) VIBRATION : 0.00 (seuil : 0.30) -> URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur
+[00:00] AUCUNE ALERTE

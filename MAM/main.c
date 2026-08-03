@@ -69,7 +69,7 @@ int choix ;
                         nbr++;
                     }
                }
-                if (nbr=0){
+                if (nbr==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
                 }
                 else{
@@ -83,7 +83,7 @@ int choix ;
                             }
                        }
                         else{
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
                         }
                    }
 
@@ -91,7 +91,7 @@ int choix ;
                 }
 
                 printf("--------------------------------------------------------------------\n");
-                printf("\nValidation terminee.\n");
+                printf("Validation terminee.\n");
 
                 //Pour recueillir les structures
                 sauvegarder_capteurs_binaire(capteurs, NB_CAPTEURS);
