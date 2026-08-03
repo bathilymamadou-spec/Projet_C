@@ -89,6 +89,7 @@ Capteur* recherche_capteur_critique(Capteur capteurs[], int n);
 
 //Affiche menu principal
 void afficher_menu();
+void viderBuffer(void);
 
 //Prototypes fonctions création de fichiers
 void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr);

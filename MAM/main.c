@@ -54,7 +54,15 @@ Capteur capteurs[NB_CAPTEURS] = {
 int choix ;
     do {
         afficher_menu();
-        scanf("%d", &choix);
+        // scanf retourne 1 si et seulement si la saisie est un entier valide
+        if (scanf("%d", &choix) != 1) {
+            printf("\n Erreur : Saisie invalide ! Veuillez entrer un nombre entier.\n");
+            viderBuffer(); // On élimine le caractère invalide
+            choix = 0;      // On force une valeur neutre pour re-boucler sereinement
+            continue;      // On repasse directement au debut
+        }
+
+
         switch (choix) {
             case 1:
                 charger_donnees_mesures(capteurs, NB_CAPTEURS);
@@ -84,7 +92,7 @@ int choix ;
                             }
                        }
                         else{
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
                         }
                    }
 
@@ -92,7 +100,7 @@ int choix ;
                 }
 
                 printf("--------------------------------------------------------------------\n");
-                printf("\nValidation terminee.\n");
+                printf("Validation terminee.\n");
 
                 //Pour recueillir les structures
                 sauvegarder_capteurs_binaire(capteurs, NB_CAPTEURS);

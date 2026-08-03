@@ -632,6 +632,10 @@ void afficher_menu(){
     printf("9. Quitter\n");
     printf("Entrer votre choix:");
 }
+void viderBuffer(void){
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
 
 //charger les données des mesure en mémoire
@@ -903,8 +907,6 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
     fclose(f);
 
     printf(" Rapport genere : %s\n", nom_fichier);
-
-
 }
 
 

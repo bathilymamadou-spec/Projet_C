@@ -16,11 +16,11 @@ Recommandation          : Inspections mensuelles
 
 ALERTES ACTIVES
 Niveau JAUNE (5 alerte(s))
-- C17 Pile Nord : Utilisation de 81.666664 de la capacite
-- C19 Pile Centre 2 : Utilisation de 80.333336 de la capacite
-- C20 Pile Sud : Utilisation de 81.333336 de la capacite
-- C23 Appui Sud : Utilisation de 80.666664 de la capacite
 - C13 Noeud 5 : ALERTE JAUNE: Augmentation de la fréquence
+- C17 Pile Nord : ALERTE JAUNE: Surcharge moderee
+- C19 Pile Centre 2 : ALERTE JAUNE: Surcharge moderee
+- C20 Pile Sud : ALERTE JAUNE: Surcharge moderee
+- C23 Appui Sud : ALERTE JAUNE: Surcharge moderee
 
 Niveau ROUGE (0 alerte(s))
   AUCUNE ALERTE
@@ -31,12 +31,7 @@ CONFORMITE EUROCODE 9
    Charge vs capacite               : OK
 
 ACTIONS PRIORITAIRES
-1. Alerte Jaune: Derive de frequence observee (augmentation de raideur)
-2. ALERTE ASYMETRIE: Ecart important entre Travee Centre-N et Centre-S (Risque fissuration)
-3. Diminuer les charges lourdes
-4. Diminuer les charges lourdes
-5. Diminuer les charges lourdes
-6. Diminuer les charges lourdes
+AUCUNE ACTION PRIORITAIRE
 
 ======================================================
 FIN DU RAPPORT
