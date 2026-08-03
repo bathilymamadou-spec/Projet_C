@@ -285,13 +285,13 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
         if (ecart < 0) ecart = -ecart; // Valeur absolue
         if (ecart > 100.0) {
             Alerte al_des;
-            strcpy(alr.horodatage, DATE_COURANTE);
-            al_des.num_capteur = i;
+            strcpy(al_des.horodatage, DATE_COURANTE);
+            al_des.num_capteur = idx_nord;
             strcpy(al_des.type_alerte, "SURCHARGE");
             strcpy(al_des.niveau, "JAUNE");
             al_des.valeur = ecart;
             al_des.seuil = 100.0;
-            strcpy(alr.action, "Verification de charge entre Pile Nord et Pile Sud");
+            strcpy(al_des.action, "Verification de charge entre Pile Nord et Pile Sud");
             alertes[*nb_alr] = al_des;//on l'insère dans un tableau d'alertes
             (*nb_alr)++;
         }

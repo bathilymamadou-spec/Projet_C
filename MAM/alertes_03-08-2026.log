@@ -44,3 +44,9 @@
 [00:00] AUCUNE ALERTE
 [00:00] AUCUNE ALERTE
 >>>>>>> c81e0d2c9bd282ed9bf627c1d41b7730a4e6dbc9
+[3-8-2026 20:11:29] ALERTE JAUNE - C13 (Noeud 5) VIBRATION : 0.51 (seuil : 0.50) -> Alerte Jaune: Derive de frequence observee (augmentation de raideur)
+[3-8-2026 20:11:29] ALERTE ROUGE - C22 (Appui Centre) DEFORMATION : 30.00 (seuil : 15.00) -> ALERTE ASYMETRIE: Ecart important entre Travee Centre-N et Centre-S (Risque fissuration)
+[3-8-2026 20:11:29] ALERTE JAUNE - C17 (Pile Nord) SURCHARGE : 2450.00 (seuil : 2400.00) -> Diminuer les charges lourdes
+[3-8-2026 20:11:29] ALERTE JAUNE - C19 (Pile Centre 2) SURCHARGE : 2410.00 (seuil : 2400.00) -> Diminuer les charges lourdes
+[3-8-2026 20:11:29] ALERTE JAUNE - C20 (Pile Sud) SURCHARGE : 2440.00 (seuil : 2400.00) -> Diminuer les charges lourdes
+[3-8-2026 20:11:29] ALERTE JAUNE - C23 (Appui Sud) SURCHARGE : 1210.00 (seuil : 1200.00) -> Diminuer les charges lourdes

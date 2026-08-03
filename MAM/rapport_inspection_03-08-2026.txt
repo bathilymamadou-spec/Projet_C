@@ -20,7 +20,7 @@ Niveau JAUNE (5 alerte(s))
 - C19 Pile Centre 2 : Utilisation de 80.333336 de la capacite
 - C20 Pile Sud : Utilisation de 81.333336 de la capacite
 - C23 Appui Sud : Utilisation de 80.666664 de la capacite
-- C13 Noeud 5 : ALERTE JAUNE: Augmentation de la frequence
+- C13 Noeud 5 : ALERTE JAUNE: Augmentation de la fréquence
 
 Niveau ROUGE (0 alerte(s))
   AUCUNE ALERTE
