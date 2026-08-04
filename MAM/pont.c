@@ -405,7 +405,6 @@ void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr
             if (!valider_capteur(&capteurs[i])){
                 printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n",
                        capteurs[i].id, capteurs[i].nom, capteurs[i].valeur_mesuree);
-                return;
             }
             else{
                 printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "valide");
