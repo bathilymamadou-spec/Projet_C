@@ -143,8 +143,7 @@ int choix ;
 
             case 4:
                 nb_alertes = 0; // Réinitialisation
-
-                detecter_anomalies_charge(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
+                detecter_anomalies(capteurs,  NB_CAPTEURS, alertes, &nb_alertes);
 
                 if (nb_alertes == 0)
                     printf("\nAnalyse effectuee. aucune alerte detectee.\n");
