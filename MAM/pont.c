@@ -113,9 +113,6 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
                            if (!valider_capteur(&capteurs[i])){
                                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
                             }
-                            else{
-                                printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
-                            }
                        }
                         else{
                             printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
@@ -223,9 +220,7 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
                         if (!valider_capteur(&capteurs[i])){
                                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
                             }
-                        else{
-                            printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
-                            }
+                     
                        }
                         else{
                             printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
@@ -297,9 +292,6 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                        if (capteurs[i].valeur_mesuree!=DEFAULT){
                            if (!valider_capteur(&capteurs[i])){
                                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
-                            }
-                            else{
-                                printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
                             }
                        }
                         else{
