@@ -736,17 +736,6 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
     time_t t = time(NULL); //on stocke le temps actuelle en seconde
     struct tm *tm = localtime(&t); //on convertit la structure dans un format lisible
 
-    sprintf(rapport.date,
-            "alertes_%02d-%02d-%04d.log",
-            tm->tm_mday,
-            tm->tm_mon + 1,
-            tm->tm_year + 1900);
-    rapport.nb_capteurs = n;
-    rapport.nb_alertes = nb_alr;
-
-    rapport.nb_capteurs = n;
-    rapport.nb_alertes = nb_alr;
-
 
     // Créer le nom du fichier avec la date du jour
     char nom_fichier[50];
