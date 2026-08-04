@@ -80,11 +80,11 @@ int valider_capteur(Capteur *cap){
         else{
             if (cap->valeur_mesuree>cap->seuil_alerte_r) {
                 cap->etat = ROUGE; // ROUGE
-                sprintf(capteurs[i].remarque, "Utilisation de %f de la capacité", div);
+                sprintf(cap->remarque, "Utilisation de %f de la capacité", div);
             }
             else if (cap->valeur_mesuree>cap->seuil_alerte_j) {
                 cap->etat = JAUNE; // JAUNE
-                sprintf(capteurs[i].remarque, "Utilisation de %f de la capacite", div);
+                sprintf(cap->remarque, "Utilisation de %f de la capacite", div);
             }
             else {
                 cap->etat = OK; // OK
@@ -98,186 +98,178 @@ int valider_capteur(Capteur *cap){
 
 //On vérfie les anomalies de la déformation
 void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
-        int nbr = 0;
-      for (int i = 0; i < NB_CAPTEURS; i++){
-                   if (capteurs[i].valeur_mesuree!=DEFAULT){
-                        nbr++;
-                    }
-               }
-                if (nbr==0){
-                    printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+    int nbr = 0;
+    for (int i = 0; i < n; i++){
+        if (capteurs[i].valeur_mesuree!=DEFAULT){
+            nbr++;
+        }
+    }
+    if (nbr==0){
+        printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+    }
+    else{
+        for (int i = 0; i < NB_CAPTEURS; i++){
+            if (capteurs[i].valeur_mesuree!=DEFAULT){
+                if (!valider_capteur(&capteurs[i])){
+                    printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
                 }
-                else{
-                   for (int i = 0; i < NB_CAPTEURS; i++){
-                       if (capteurs[i].valeur_mesuree!=DEFAULT){
-                           if (!valider_capteur(&capteurs[i])){
-                               printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
-                            }
-                            else {
-                                time_t t = time(NULL);
-                                struct tm *now = localtime(&t);
-                            
-                                char DATE_COURANTE[30];
-                                sprintf(DATE_COURANTE,"%d-%d-%d %d:%d:%d", now->tm_mday, now->tm_mon + 1, now->tm_year + 1900, now->tm_hour, now->tm_min, now->tm_sec); //pour stocker la date actuelle dans la variable
-                                for(int i=0; i<n; i++){
-                                        // On ne traite que les capteurs de déformation
-                                    if(strcmp(capteurs[i].type, "DEFORM")!=0){
-                                        continue;
-                                    }
-                                    float mesure = capteurs[i].valeur_mesuree;
-                                    float precedente = capteurs[i].valeur_precedente;
-                                    float saut = fabsf(mesure - precedente);
-                                    // ---  CAS CRITIQUE : Déformation unilatérale > 200 µm/m (Seuil de fissuration) ---
-                                    if (fabsf(mesure) > 200.0f) {
-                                        Alerte alr;
-                                        strcpy(alr.horodatage, DATE_COURANTE);
-                                        alr.num_capteur = i;
-                                        strcpy(alr.type_alerte, "DEFORMATION");
-                                        strcpy(alr.niveau, "ROUGE");
-                                        alr.valeur = mesure;
-                                        alr.seuil = 200.0f;
-                                        strcpy(alr.action, "URGENT: Seuil critique de fissuration dépassé");
-                                        alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
-                                        (*nb_alr)++;
-                                    }
-                            
-                                    // --- CAS ROUGE : Saut important (> 25 µm/m) ---
-                                    else if (saut > 25.0f) {
-                                        Alerte alr;
-                                        strcpy(alr.horodatage, DATE_COURANTE);
-                                        alr.num_capteur = i;
-                                        strcpy(alr.type_alerte, "DEFORMATION");
-                                        strcpy(alr.niveau, "ROUGE");
-                                        alr.valeur = saut;
-                                        alr.seuil = 25.0f;
-                                        strcpy(alr.action, "Alerte Rouge!!: Augmentation brutale de la déformation");
-                                        alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
-                                        (*nb_alr)++;
-                                    }
-                            
-                                    // --- CAS JAUNE : Saut moderé (> 10 µm/m) ---
-                                    else if (saut > 10.0f) {
-                                        Alerte alr;
-                                        strcpy(alr.horodatage, DATE_COURANTE);
-                                        alr.num_capteur = i;
-                                        strcpy(alr.type_alerte, "DEFORMATION");
-                                        strcpy(alr.niveau, "JAUNE");
-                                        alr.valeur = saut;
-                                        alr.seuil = 10.0f;
-                                        strcpy(alr.action, "Alerte Jaune: Augmentation progressive par rapport au jour précèdent");
-                            
-                                        alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
-                                        (*nb_alr)++;
-                                    }
-                                }
-                            
-                                // ---  DÉTECTION D'ASYMÉTRIE (Fissuration / Comportement anormal entre capteurs) ---
-                                // Exemple : Comparaison entre C06 (Travée Centre-N, index 5) et C07 (Travée Centre-S, index 6)
-                                int T_centre_n = 5; // C06
-                                int T_centre_s = 6; // C07
-                            
-                                if (T_centre_n < n && T_centre_s < n) {
-                                    float diff_asymetrie = fabsf(capteurs[T_centre_n].valeur_mesuree - capteurs[T_centre_s].valeur_mesuree);
-                            
-                                    // Si l'écart entre les deux côtés de la travée dépasse 15 µm/m
-                                    if (diff_asymetrie > 15.0f) {
-                                        Alerte alr;
-                                        strcpy(alr.horodatage, DATE_COURANTE);
-                                        alr.num_capteur = T_centre_n;
-                                        strcpy(alr.type_alerte, "DEFORMATION");
-                                        strcpy(alr.niveau, "ROUGE");
-                                        alr.valeur = diff_asymetrie;
-                                        alr.seuil = 15.0f;
-                                        strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Travee Centre-N et Centre-S (Risque fissuration)");
-                                        alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
-                                        (*nb_alr)++;
-                                    }
-                                }
-                                                    }
-                                                   }
-                        else{
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                else {
+                    time_t t = time(NULL);
+                    struct tm *now = localtime(&t);
+
+                    char DATE_COURANTE[30];
+                    sprintf(DATE_COURANTE,"%d-%d-%d %d:%d:%d", now->tm_mday, now->tm_mon + 1, now->tm_year + 1900, now->tm_hour, now->tm_min, now->tm_sec); //pour stocker la date actuelle dans la variable
+                    for(int i=0; i<n; i++){
+                    // On ne traite que les capteurs de déformation
+                        if(strcmp(capteurs[i].type, "DEFORM")!=0){
+                            continue;
                         }
-                   }
+                        float mesure = capteurs[i].valeur_mesuree;
+                        float precedente = capteurs[i].valeur_precedente;
+                        float saut = fabsf(mesure - precedente);
 
+                        // ---  CAS CRITIQUE : Déformation unilatérale > 200 µm/m (Seuil de fissuration) ---
+                        if (fabsf(mesure) > 200.0f) {
+                            Alerte alr;
+                            strcpy(alr.horodatage, DATE_COURANTE);
+                            alr.num_capteur = i;
+                            strcpy(alr.type_alerte, "DEFORMATION");
+                            strcpy(alr.niveau, "ROUGE");
+                            alr.valeur = mesure;
+                            alr.seuil = 200.0f;
+                            strcpy(alr.action, "URGENT: Seuil critique de fissuration dépassé");
+                            alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
+                            (*nb_alr)++;
+                        }
 
+                        // --- CAS ROUGE : Saut important (> 25 µm/m) ---
+                        else if (saut > 25.0f) {
+                            Alerte alr;
+                            strcpy(alr.horodatage, DATE_COURANTE);
+                            alr.num_capteur = i;
+                            strcpy(alr.type_alerte, "DEFORMATION");
+                            strcpy(alr.niveau, "ROUGE");
+                            alr.valeur = saut;
+                            alr.seuil = 25.0f;
+                            strcpy(alr.action, "Alerte Rouge!!: Augmentation brutale de la déformation");
+                            alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
+                            (*nb_alr)++;
+                        }
+
+                        // --- CAS JAUNE : Saut moderé (> 10 µm/m) ---
+                        else if (saut > 10.0f) {
+                            Alerte alr;
+                            strcpy(alr.horodatage, DATE_COURANTE);
+                            alr.num_capteur = i;
+                            strcpy(alr.type_alerte, "DEFORMATION");
+                            strcpy(alr.niveau, "JAUNE");
+                            alr.valeur = saut;
+                            alr.seuil = 10.0f;
+                            strcpy(alr.action, "Alerte Jaune: Augmentation progressive par rapport au jour précèdent");
+                            alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
+                            (*nb_alr)++;
+                        }
+                    }
+
+                    // ---  DÉTECTION D'ASYMÉTRIE (Fissuration / Comportement anormal entre capteurs) ---
+                    // Exemple : Comparaison entre C06 (Travée Centre-N, index 5) et C07 (Travée Centre-S, index 6)
+                    int T_centre_n = 5; // C06
+                    int T_centre_s = 6; // C07
+
+                    if (T_centre_n < n && T_centre_s < n) {
+                        float diff_asymetrie = fabsf(capteurs[T_centre_n].valeur_mesuree - capteurs[T_centre_s].valeur_mesuree);
+
+                        // Si l'écart entre les deux côtés de la travée dépasse 15 µm/m
+                        if (diff_asymetrie > 15.0f) {
+                            Alerte alr;
+                            strcpy(alr.horodatage, DATE_COURANTE);
+                            alr.num_capteur = T_centre_n;
+                            strcpy(alr.type_alerte, "DEFORMATION");
+                            strcpy(alr.niveau, "ROUGE");
+                            alr.valeur = diff_asymetrie;
+                            alr.seuil = 15.0f;
+                            strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Travee Centre-N et Centre-S (Risque fissuration)");
+                            alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
+                            (*nb_alr)++;
+                        }
+                    }
                 }
-    
+            }
+
+            else{
+                printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+            }
+        }
+    }
+
 }
 
 
 //Détecte fréquences propres hors plage nominale, comportement de résonance, perte de raideur
 void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
     int nbr = 0;
-    for (int i = 0; i < NB_CAPTEURS; i++){
+    for (int i = 0; i < n; i++){
         if (capteurs[i].valeur_mesuree!=DEFAULT){
-                nbr++;
+            nbr++;
+        }
+    }
+    if (nbr==0){
+        printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+    }
+    else{
+        for (int i = 0; i < n; i++){
+            if (capteurs[i].valeur_mesuree!=DEFAULT){
+                if (!valider_capteur(&capteurs[i])){
+                    printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
                 }
-            }
-        if (nbr==0){
-            printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
-            }
-        else{
-            for (int i = 0; i < NB_CAPTEURS; i++){
-                    if (capteurs[i].valeur_mesuree!=DEFAULT){
-                        if (!valider_capteur(&capteurs[i])){
-                               printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
-                            }
-                        else {
-                            
-                        
-                            
-                                time_t t = time(NULL);
-                                struct tm *now = localtime(&t);
-                            
-                                char DATE_COURANTE[30];
-                                sprintf(DATE_COURANTE,"%d-%d-%d %d:%d:%d", now->tm_mday, now->tm_mon + 1, now->tm_year + 1900, now->tm_hour, now->tm_min, now->tm_sec); //pour stocker la date actuelle dans la variable
-                                for (int i = 0; i < n; i++) {
-                                    // Filtrage : on ne traite que les capteurs de vibration
-                                    if (strcmp(capteurs[i].type, "VIBR") != 0) {
-                                        continue;
-                                    }
-                            
-                                    float freq = capteurs[i].valeur_mesuree;
-                            
-                                    // ---  CAS ROUGE : Fréquence hors limites critiques (< 0.30 Hz ou > 0.60 Hz) ---
-                                    if (freq > 0.60f || freq < 0.30f) {
-                                        Alerte alr;
-                                        strcpy(alr.horodatage, DATE_COURANTE);
-                                        alr.num_capteur = i;
-                                        strcpy(alr.type_alerte, "VIBRATION");
-                                        strcpy(alr.niveau, "ROUGE");
-                                        alr.valeur = freq;
-                                        alr.seuil = (freq > 0.60f) ? 0.60f : 0.30f;
-                                        strcpy(alr.action, "URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur");
-                                        alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
-                                        (*nb_alr)++;
-                                    }
-                            
-                                    // --- CAS JAUNE : Dérive de fréquence (0.51 Hz à 0.60 Hz) ---
-                                    else if (freq >= 0.51f && freq <= 0.60f) {
-                                        Alerte alr;
-                                        strcpy(alr.horodatage, DATE_COURANTE);
-                                        alr.num_capteur = i;
-                                        strcpy(alr.type_alerte, "VIBRATION");
-                                        strcpy(alr.niveau, "JAUNE");
-                                        alr.valeur = freq;
-                                        alr.seuil = 0.50f; // La limite nominale supérieure en service est 0.50 Hz
-                                        strcpy(alr.action, "Alerte Jaune: Derive de frequence observee (augmentation de raideur)");
-                            
-                                        alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
-                                        (*nb_alr)++;
-                                    }
-                                }
-                            }
+                else {
+                    time_t t = time(NULL);
+                    struct tm *now = localtime(&t);
+                    char DATE_COURANTE[30];
+                    sprintf(DATE_COURANTE,"%d-%d-%d %d:%d:%d", now->tm_mday, now->tm_mon + 1, now->tm_year + 1900, now->tm_hour, now->tm_min, now->tm_sec); //pour stocker la date actuelle dans la variable
+                    for (int i = 0; i < n; i++) {
+
+                        // Filtrage : on ne traite que les capteurs de vibration
+                        if (strcmp(capteurs[i].type, "VIBR") != 0) {
+                            continue;
                         }
-                     
+                        float freq = capteurs[i].valeur_mesuree;
+
+                        // ---  CAS ROUGE : Fréquence hors limites critiques (< 0.30 Hz ou > 0.60 Hz) ---
+                        if (freq > 0.60f || freq < 0.30f) {
+                            Alerte alr;
+                            strcpy(alr.horodatage, DATE_COURANTE);
+                            alr.num_capteur = i;
+                            strcpy(alr.type_alerte, "VIBRATION");
+                            strcpy(alr.niveau, "ROUGE");
+                            alr.valeur = freq;
+                            alr.seuil = (freq > 0.60f) ? 0.60f : 0.30f;
+                            strcpy(alr.action, "URGENT: Frequence critique hors norme - Risque d'instabilite ou perte de raideur");
+                            alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
+                            (*nb_alr)++;
+                        }
+
+                        // --- CAS JAUNE : Dérive de fréquence (0.51 Hz à 0.60 Hz) ---
+                        else if (freq >= 0.51f && freq <= 0.60f) {
+                            Alerte alr;
+                            strcpy(alr.horodatage, DATE_COURANTE);
+                            alr.num_capteur = i;
+                            strcpy(alr.type_alerte, "VIBRATION");
+                            strcpy(alr.niveau, "JAUNE");
+                            alr.valeur = freq;
+                            alr.seuil = 0.50f; // La limite nominale supérieure en service est 0.50 Hz
+                            strcpy(alr.action, "Alerte Jaune: Derive de frequence observee (augmentation de raideur)");
+                            alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
+                            (*nb_alr)++;
+                        }
                     }
-                
-                else{
-                    printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
                 }
             }
+            else{
+                printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
+            }
+        }
+    }
 }
 
 
@@ -287,12 +279,12 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
     for (int i = 0; i < n; i++){
         if (capteurs[i].valeur_mesuree!=DEFAULT){
             nbr++;
-                }
+        }
     }
     if (nbr==0){
         printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
         return;
-        }
+    }
     else{
         for (int i = 0; i < n; i++){
             if (capteurs[i].valeur_mesuree!=DEFAULT){
@@ -302,17 +294,17 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                 else {
                     float charge_nord = -1.0, charge_sud = -1.0;
                     int idx_nord = -1;
-                //on receuille le date courante
+                    //on receuille le date courante
                     time_t t = time(NULL);
                     struct tm *now = localtime(&t);
                     char DATE_COURANTE[30];
                     sprintf(DATE_COURANTE,"%d-%d-%d %d:%d:%d", now->tm_mday, now->tm_mon + 1, now->tm_year + 1900, now->tm_hour, now->tm_min, now->tm_sec);
-                
-                // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
-                    for (int i = 0; i < n; i++) {
+
+                    // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
+                    for (int i = 0; i < n; i++){
                         if (strcmp(capteurs[i].type, "CHARGE") == 0) {
                             float div = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale)*100;
-                            if (div > 80.0) {
+                            if (div > 80.0){
                                 Alerte alr;
                                 strcpy(alr.horodatage, DATE_COURANTE);
                                 alr.num_capteur = i;
@@ -323,9 +315,8 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                                 strcpy(alr.action, "Diminuer les charges lourdes");
                                 alertes[*nb_alr] = alr;//on l'insère dans un tableau d'alertes
                                 (*nb_alr)++;
-                
                             }
-                            else if (div > 90.0) {
+                            else if (div > 90.0){
                                 capteurs[i].etat = ROUGE;
                                 sprintf(capteurs[i].remarque, "Utilisation de %f de la capacité", div);
                                 Alerte alr;
@@ -340,23 +331,23 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                                 (*nb_alr)++;
                             }
                         }
-                
-                // ÉTAPE 2 : Détection du déséquilibre entre les piles (Analyse globale)
-                            // Récupération des charges aux deux extrémités (Pile Nord vs Pile Sud)
+
+                    // ÉTAPE 2 : Détection du déséquilibre entre les piles (Analyse globale)
+                                // Récupération des charges aux deux extrémités (Pile Nord vs Pile Sud)
                         if (strstr(capteurs[i].nom, "Pile Nord") != NULL) {
-                                charge_nord = capteurs[i].valeur_mesuree;
-                                idx_nord = i;
-                            }
-                            if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
-                                charge_sud = capteurs[i].valeur_mesuree;
-                            }
+                            charge_nord = capteurs[i].valeur_mesuree;
+                            idx_nord = i;
                         }
-                
+                        if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
+                            charge_sud = capteurs[i].valeur_mesuree;
+                        }
+                    }
+
                     // Calcul du déséquilibre entre les deux piles
                     if (charge_nord != -1.0 && charge_sud != -1.0) {
                         float ecart = charge_nord - charge_sud;
                         if (ecart < 0) ecart = -ecart; // Valeur absolue
-                        if (ecart > 100.0) {
+                        if (ecart > 100.0){
                             Alerte al_des;
                             strcpy(al_des.horodatage, DATE_COURANTE);
                             al_des.num_capteur = idx_nord;
@@ -369,17 +360,13 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                             (*nb_alr)++;
                         }
                     }
-                
                 }
             }
             else{
                 printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
-                }
             }
-
-
         }
-   
+    }
 }
 
 //fonction de detections des anomalies
@@ -387,7 +374,7 @@ void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr
     int nbr = 0;
     //  Compter les capteurs qui ont des valeurs
     for (int i = 0; i < n; i++){
-        if (capteurs[i].valeur_mesuree != 0.0){
+        if (capteurs[i].valeur_mesuree != DEFAULT){
             nbr++;
         }
     }
@@ -398,28 +385,7 @@ void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr
         return;
     }
 
-    // 3. Valider chaque capteur
-    for (int i = 0; i < n; i++){
-        if (capteurs[i].valeur_mesuree != 0.0){
-            if (!valider_capteur(&capteurs[i])){
-                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n",
-                       capteurs[i].id, capteurs[i].nom, capteurs[i].valeur_mesuree);
-                return;
-            }
-            else{
-                printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "valide");
-
-            }
-        }
-        else{
-            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees.\n", capteurs[i].nom);
-        }
-    }
-
-    // 4. Détecter les anomalies
-    detecter_anomalies_vibration(capteurs, n, alertes, nb_alr);
-    detecter_anomalies_deformation(capteurs, n, alertes, nb_alr);
-    detecter_anomalies_charge(capteurs, n, alertes, nb_alr);
+    // Détecter les anomalies
 
 }
 
