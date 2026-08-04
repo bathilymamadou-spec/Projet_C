@@ -228,7 +228,7 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
                             }
                        }
                         else{
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
                         }
                    }
 
@@ -303,7 +303,7 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                             }
                        }
                         else{
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
                         }
                    }
 
@@ -413,7 +413,7 @@ void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr
             }
         }
         else{
-            printf("Ce capteur n'a pas encore de valeurs. Veuillez charger ses donnees.\n");
+            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees.\n", capteurs[i].nom);
         }
     }
 
@@ -509,7 +509,7 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
                        if (capteurs[i].valeur_mesuree==DEFAULT){
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
                             return;
                         }
 
@@ -723,7 +723,7 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
                        if (capteurs[i].valeur_mesuree==DEFAULT){
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
                             return;
                         }
                    }
@@ -735,18 +735,11 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
 
     time_t t = time(NULL); //on stocke le temps actuelle en seconde
     struct tm *tm = localtime(&t); //on convertit la structure dans un format lisible
-
-    sprintf(rapport.date,
+        sprintf(rapport.date,
             "alertes_%02d-%02d-%04d.log",
             tm->tm_mday,
             tm->tm_mon + 1,
             tm->tm_year + 1900);
-    rapport.nb_capteurs = n;
-    rapport.nb_alertes = nb_alr;
-
-    rapport.nb_capteurs = n;
-    rapport.nb_alertes = nb_alr;
-
 
     // Créer le nom du fichier avec la date du jour
     char nom_fichier[50];
@@ -906,7 +899,7 @@ void exporter_rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], in
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
                        if (capteurs[i].valeur_mesuree==DEFAULT){
-                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+                            printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
 
                         }
                    }
