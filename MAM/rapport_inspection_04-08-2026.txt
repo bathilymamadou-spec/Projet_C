@@ -1,0 +1,9 @@
+
+RESUME DE SANTE STRUCTURALE
+Indice global (SHI)       : 79.89 / 100 
+  Score deformation       : 77.09 / 100 (40% ponderation)
+  Score vibration         : 82.86 / 100 (35% ponderation)
+  Score charge            : 80.21 / 100 (25% ponderation)
+
+Etat general            : ALERTE ORANGE
+Recommandation          : Inspections mensuelles
