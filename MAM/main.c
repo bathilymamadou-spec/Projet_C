@@ -56,7 +56,7 @@ int choix ;
         afficher_menu();
         // scanf retourne 1 si et seulement si la saisie est un entier valide
         if (scanf("%d", &choix) != 1) {
-            printf("\n Erreur : Saisie invalide ! Veuillez entrer un nombre entier.\n");
+            printf("\nErreur : Saisie invalide ! Veuillez entrer un nombre entier.\n");
             viderBuffer(); // On élimine le caractère invalide
             choix = 0;      // On force une valeur neutre pour re-boucler sereinement
             continue;      // On repasse directement au debut
@@ -121,7 +121,7 @@ int choix ;
                         nb++;
                     }
                }
-                if (nb=0){
+                if (nb==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
                 }
                 else{
@@ -145,7 +145,7 @@ int choix ;
 
                 detecter_anomalies(capteurs, NB_CAPTEURS, alertes, &nb_alertes);
                 if (nb_alertes == 0)
-                    printf("\nAnalyse effectuee. %d alerte(s) detectee(s) et archivee(s).\n", nb_alertes);
+                    printf("\nAnalyse effectuee. aucune alerte detectee.\n");
                 else
                     printf("\nAnalyse effectuee. %d alerte(s) detectee(s) et archivee(s).\n", nb_alertes);
 
