@@ -80,11 +80,11 @@ int valider_capteur(Capteur *cap){
         else{
             if (cap->valeur_mesuree>cap->seuil_alerte_r) {
                 cap->etat = ROUGE; // ROUGE
-                sprintf(cap->remarque, "Utilisation de %f de la capacité", div);
+                sprintf(cap->remarque, "Utilisation de %f de la capacité", 80);
             }
             else if (cap->valeur_mesuree>cap->seuil_alerte_j) {
                 cap->etat = JAUNE; // JAUNE
-                sprintf(cap->remarque, "Utilisation de %f de la capacite", div);
+                sprintf(cap->remarque, "Utilisation de %f de la capacite", 8);
             }
             else {
                 cap->etat = OK; // OK
@@ -100,16 +100,17 @@ int valider_capteur(Capteur *cap){
 void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
         int nbr = 0;
       for (int i = 0; i < NB_CAPTEURS; i++){
-                   if (capteurs[i].valeur_mesuree!=DEFAULT){
+                   if (capteurs[i].valeur_mesuree!=0.0){
                         nbr++;
                     }
                }
                 if (nbr==0){
                     printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+                    return;
                 }
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
-                       if (capteurs[i].valeur_mesuree!=DEFAULT){
+                       if (capteurs[i].valeur_mesuree!=0.0){
                            if (!valider_capteur(&capteurs[i])){
                                printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
                             }
@@ -216,6 +217,7 @@ void detecter_anomalies_vibration(Capteur capteurs[], int n, Alerte alertes[], i
             }
         if (nbr==0){
             printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+            return;
             }
         else{
             for (int i = 0; i < NB_CAPTEURS; i++){
