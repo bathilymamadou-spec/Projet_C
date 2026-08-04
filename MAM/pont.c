@@ -290,84 +290,87 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
             if (capteurs[i].valeur_mesuree!=DEFAULT){
                 if (!valider_capteur(&capteurs[i])){
                     printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
+                    return;
                 }
-                else {
-                    float charge_nord = -1.0, charge_sud = -1.0;
-                    int idx_nord = -1;
-                    //on receuille le date courante
-                    time_t t = time(NULL);
-                    struct tm *now = localtime(&t);
-                    char DATE_COURANTE[30];
-                    sprintf(DATE_COURANTE,"%d-%d-%d %d:%d:%d", now->tm_mday, now->tm_mon + 1, now->tm_year + 1900, now->tm_hour, now->tm_min, now->tm_sec);
 
-                    // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
-                    for (int i = 0; i < n; i++){
-                        if (strcmp(capteurs[i].type, "CHARGE") == 0) {
-                            float div = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale)*100;
-                            if (div > 80.0){
-                                Alerte alr;
-                                strcpy(alr.horodatage, DATE_COURANTE);
-                                alr.num_capteur = i;
-                                strcpy(alr.type_alerte, "SURCHARGE");
-                                strcpy(alr.niveau, "JAUNE");
-                                alr.valeur = capteurs[i].valeur_mesuree;
-                                alr.seuil = capteurs[i].valeur_nominale * 0.80;
-                                strcpy(alr.action, "Diminuer les charges lourdes");
-                                alertes[*nb_alr] = alr;//on l'insère dans un tableau d'alertes
-                                (*nb_alr)++;
-                            }
-                            else if (div > 90.0){
-                                capteurs[i].etat = ROUGE;
-                                sprintf(capteurs[i].remarque, "Utilisation de %f de la capacité", div);
-                                Alerte alr;
-                                strcpy(alr.horodatage, DATE_COURANTE);
-                                alr.num_capteur = i;
-                                strcpy(alr.type_alerte, "SURCHARGE");
-                                strcpy(alr.niveau, "JAUNE");
-                                alr.valeur = capteurs[i].valeur_mesuree;
-                                alr.seuil = capteurs[i].valeur_nominale * 0.80;
-                                strcpy(alr.action, "Fermeture circulation Poids-Lourds");
-                                alertes[*nb_alr] = alr;//on l'insère dans un tableau d'alertes
-                                (*nb_alr)++;
-                            }
-                        }
-
-                    // ÉTAPE 2 : Détection du déséquilibre entre les piles (Analyse globale)
-                                // Récupération des charges aux deux extrémités (Pile Nord vs Pile Sud)
-                        if (strstr(capteurs[i].nom, "Pile Nord") != NULL) {
-                            charge_nord = capteurs[i].valeur_mesuree;
-                            idx_nord = i;
-                        }
-                        if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
-                            charge_sud = capteurs[i].valeur_mesuree;
-                        }
-                    }
-
-                    // Calcul du déséquilibre entre les deux piles
-                    if (charge_nord != -1.0 && charge_sud != -1.0) {
-                        float ecart = charge_nord - charge_sud;
-                        if (ecart < 0) ecart = -ecart; // Valeur absolue
-                        if (ecart > 100.0){
-                            Alerte al_des;
-                            strcpy(al_des.horodatage, DATE_COURANTE);
-                            al_des.num_capteur = idx_nord;
-                            strcpy(al_des.type_alerte, "SURCHARGE");
-                            strcpy(al_des.niveau, "JAUNE");
-                            al_des.valeur = ecart;
-                            al_des.seuil = 100.0;
-                            strcpy(al_des.action, "Verification de charge entre Pile Nord et Pile Sud");
-                            alertes[*nb_alr] = al_des;//on l'insère dans un tableau d'alertes
-                            (*nb_alr)++;
-                        }
-                    }
-                }
             }
             else{
                 printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n", capteurs[i].nom);
+                return;
+            }
+        }
+    }
+    float charge_nord = -1.0, charge_sud = -1.0;
+    int idx_nord = -1;
+    //on receuille le date courante
+    time_t t = time(NULL);
+    struct tm *now = localtime(&t);
+    char DATE_COURANTE[30];
+    sprintf(DATE_COURANTE,"%d-%d-%d %d:%d:%d", now->tm_mday, now->tm_mon + 1, now->tm_year + 1900, now->tm_hour, now->tm_min, now->tm_sec);
+
+    // ÉTAPE 1 : Détection des erreurs & surcharges individuelles (Capteur par capteur)
+    for (int i = 0; i < n; i++){
+        if (strcmp(capteurs[i].type, "CHARGE") == 0) {
+            float div = (capteurs[i].valeur_mesuree / capteurs[i].valeur_nominale)*100;
+                if (div > 80.0){
+                    Alerte alr;
+                    strcpy(alr.horodatage, DATE_COURANTE);
+                    alr.num_capteur = i;
+                    strcpy(alr.type_alerte, "SURCHARGE");
+                    strcpy(alr.niveau, "JAUNE");
+                    alr.valeur = capteurs[i].valeur_mesuree;
+                    alr.seuil = capteurs[i].valeur_nominale * 0.80;
+                    strcpy(alr.action, "Diminuer les charges lourdes");
+                    alertes[*nb_alr] = alr;//on l'insère dans un tableau d'alertes
+                    (*nb_alr)++;
+                }
+                else if (div > 90.0){
+                    capteurs[i].etat = ROUGE;
+                    sprintf(capteurs[i].remarque, "Utilisation de %f de la capacité", div);
+                    Alerte alr;
+                    strcpy(alr.horodatage, DATE_COURANTE);
+                    alr.num_capteur = i;
+                    strcpy(alr.type_alerte, "SURCHARGE");
+                    strcpy(alr.niveau, "JAUNE");
+                    alr.valeur = capteurs[i].valeur_mesuree;
+                    alr.seuil = capteurs[i].valeur_nominale * 0.80;
+                    strcpy(alr.action, "Fermeture circulation Poids-Lourds");
+                    alertes[*nb_alr] = alr;//on l'insère dans un tableau d'alertes
+                    (*nb_alr)++;
+                }
+
+    // ÉTAPE 2 : Détection du déséquilibre entre les piles (Analyse globale)
+    // Récupération des charges aux deux extrémités (Pile Nord vs Pile Sud)
+        if (strstr(capteurs[i].nom, "Pile Nord") != NULL) {
+            charge_nord = capteurs[i].valeur_mesuree;
+            idx_nord = i;
+        }
+        if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
+            charge_sud = capteurs[i].valeur_mesuree;
+        }
+    }
+
+    // Calcul du déséquilibre entre les deux piles
+    if (charge_nord != -1.0 && charge_sud != -1.0) {
+        float ecart = charge_nord - charge_sud;
+        if (ecart < 0) ecart = -ecart; // Valeur absolue
+            if (ecart > 100.0){
+                Alerte al_des;
+                strcpy(al_des.horodatage, DATE_COURANTE);
+                al_des.num_capteur = idx_nord;
+                strcpy(al_des.type_alerte, "SURCHARGE");
+                strcpy(al_des.niveau, "JAUNE");
+                al_des.valeur = ecart;
+                al_des.seuil = 100.0;
+                strcpy(al_des.action, "Verification de charge entre Pile Nord et Pile Sud");
+                alertes[*nb_alr] = al_des;//on l'insère dans un tableau d'alertes
+                (*nb_alr)++;
             }
         }
     }
 }
+
+
 
 //fonction de detections des anomalies
 void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
