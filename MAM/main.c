@@ -163,6 +163,8 @@ int choix ;
                 break;
 
             case 7:
+                 exporter_rapport_inspection(capteurs, NB_CAPTEURS, alertes, nb_alertes);
+
                 sleep(2);
                 break;
 

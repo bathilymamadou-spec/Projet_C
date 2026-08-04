@@ -80,6 +80,7 @@ float calculer_score_charge(Capteur capteurs[], int n);
 void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_alr, IndiceHealthStructural *sante, FILE *f);
 //ajout d'un parametre File afin de pouvoir remplir le rapport
 
+
 //Tri à bulles groupant capteurs par type (DEFORM, VIBR, CHARGE)
 void trier_capteurs_par_type(Capteur capteurs[], int n);
 
@@ -93,6 +94,9 @@ void viderBuffer(void);
 
 //Prototypes fonctions création de fichiers
 void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr);
+
+//Fonction charger d'exporter le rapport réglementaire
+void exporter_rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr);
 
 int charger_donnees_mesures(Capteur capteurs[], int n);
 

@@ -386,14 +386,14 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
 //fonction de detections des anomalies
 void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr){
     int nbr = 0;
-    // 1. Compter les capteurs qui ont des valeurs
+    //  Compter les capteurs qui ont des valeurs
     for (int i = 0; i < n; i++){
         if (capteurs[i].valeur_mesuree != 0.0){
             nbr++;
         }
     }
 
-    // 2. Vérifier que les données sont chargées
+    // Vérifier que les données sont chargées
     if (nbr == 0){
         printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
         return;
@@ -508,25 +508,17 @@ void calculer_indice_sante(Capteur capteurs[], int n, Alerte alertes[], int nb_a
                 }
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
-                       if (capteurs[i].valeur_mesuree!=DEFAULT){
-                           if (!valider_capteur(&capteurs[i])){
-                               printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
-                               return;
-
-                            }
-                            else{
-                                printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
-
-                            }
-                       }
-                        else{
+                       if (capteurs[i].valeur_mesuree==DEFAULT){
                             printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
                             return;
                         }
+
+                       }
+
                    }
 
 
-                }
+
 
     sante->score_deformation = calculer_score_deformation(capteurs, n);
     sante->score_vibration = calculer_score_vibration(capteurs, n);
@@ -707,7 +699,7 @@ int sauvegarder_capteurs_binaire(Capteur capteurs[], int n){
 }
 
 
-// Fonction pour la conformité (en dehors de rapport_inspection)
+// Fonction pour la conformité
 const char* conformite_cap(int valide) {
     if (valide == 1)
         return "OK";
@@ -730,23 +722,12 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
                 }
                 else{
                    for (int i = 0; i < NB_CAPTEURS; i++){
-                       if (capteurs[i].valeur_mesuree!=DEFAULT){
-                           if (!valider_capteur(&capteurs[i])){
-                               printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
-                               return;
-                            }
-                            else{
-                                printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
-                                return;
-                            }
-                       }
-                        else{
+                       if (capteurs[i].valeur_mesuree==DEFAULT){
                             printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
                             return;
                         }
                    }
 
-        return;
                 }
 
     // Remplir RapportInspection
@@ -909,6 +890,186 @@ void rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr)
     printf(" Rapport genere : %s\n", nom_fichier);
 }
 
+
+void exporter_rapport_inspection(Capteur capteurs[], int n, Alerte alertes[], int nb_alr) {
+    IndiceHealthStructural sante;
+    int nbr = 0;
+    for (int i = 0; i < NB_CAPTEURS; i++){
+                   if (capteurs[i].valeur_mesuree!=DEFAULT){
+                        nbr++;
+                    }
+               }
+                if (nbr==0){
+                    printf("Les capteurs n'ont pas encore de valeurs. Veuillez charger les donnees des mesures.\n");
+                    return;
+                }
+                else{
+                   for (int i = 0; i < NB_CAPTEURS; i++){
+                       if (capteurs[i].valeur_mesuree==DEFAULT){
+                            printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
+
+                        }
+                   }
+                }
+
+    // Remplir RapportInspection
+    RapportInspection rapport;
+
+    time_t t = time(NULL); //on stocke le temps actuelle en seconde
+    struct tm *tm = localtime(&t); //on convertit la structure dans un format lisible
+
+    sprintf(rapport.date,
+            "alertes_%02d-%02d-%04d.log",
+            tm->tm_mday,
+            tm->tm_mon + 1,
+            tm->tm_year + 1900);
+    rapport.nb_capteurs = n;
+    rapport.nb_alertes = nb_alr;
+
+    rapport.nb_capteurs = n;
+    rapport.nb_alertes = nb_alr;
+
+
+    // Créer le nom du fichier avec la date du jour
+    char nom_fichier[50];
+     //on ecrit dans la chaine de caractère
+    sprintf(nom_fichier,
+            "rapport_inspection_%02d-%02d-%04d.txt",
+            tm->tm_mday,
+            tm->tm_mon + 1,
+            tm->tm_year + 1900);
+
+    // Copier les capteurs
+    for (int i = 0; i < n; i++) {
+        rapport.capteurs[i] = capteurs[i];
+    }
+
+    // Copier les alertes (nb_alr peut être différent de n)
+    for (int i = 0; i < nb_alr; i++) {
+        rapport.alertes[i] = alertes[i];
+    }
+
+
+    // Ouvrir le fichier
+    FILE *f = fopen(nom_fichier, "w");
+    if (f == NULL) {
+        perror("fopen");
+        return;
+    }
+
+    // Présentation du rapport
+    printf( "======================================================\n");
+    printf( "RAPPORT D'INSPECTION\n");
+    printf( "Pont Faidherbe de Saint-Louis\n");
+    printf( "Date : %s\n", rapport.date);
+    printf( "Norme : EN 1999 (Eurocode 9) - Conception des structures en aluminium\n");
+    printf( "======================================================\n");
+
+    // Résumé de santé structurale
+    calculer_indice_sante(capteurs, n, alertes, nb_alr, &sante, f);
+
+    // Alertes actives
+    int compt_jaune = 0;
+    int compt_rouge = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (capteurs[i].etat == JAUNE)
+            compt_jaune++;
+        else if (capteurs[i].etat == ROUGE)
+            compt_rouge++;
+    }
+
+//Affichage des alertes
+    printf( "\nALERTES ACTIVES\n");
+    printf( "Niveau JAUNE (%d alerte(s))\n", compt_jaune);
+    // Afficher les alertes jaunes
+    if (compt_jaune == 0)
+        printf("  AUCUNE ALERTE");
+    else{
+        for (int i = 0; i < n; i++) {
+            if (capteurs[i].etat == JAUNE) {
+                printf( "- %s %s : %s\n", capteurs[i].id, capteurs[i].nom, capteurs[i].remarque);
+        }
+    }
+}
+
+
+    printf("\nNiveau ROUGE (%d alerte(s))\n", compt_rouge);
+    // Afficher les alertes rouges
+    if (compt_rouge == 0)
+        printf( "  AUCUNE ALERTE\n");
+    else {
+        for (int i = 0; i < n; i++) {
+            if (capteurs[i].etat == ROUGE) {
+                printf( "- %s %s : %s\n", capteurs[i].id, capteurs[i].nom, capteurs[i].remarque);
+            }
+        }
+    }
+
+    // Conformité Eurocode
+    int validation_deform = 1;
+    int validation_vibr = 1;
+    int validation_charge = 1;
+
+    // Vérification déformation
+    for (int i = 0; i < n; i++) {
+        if (strcmp(capteurs[i].type, "DEFORM") == 0) {
+            if (valider_capteur(&capteurs[i]) == 0) {
+                validation_deform = 0;
+                break;
+            }
+        }
+    }
+
+    // Vérification vibration
+    for (int i = 0; i < n; i++) {
+        if (strcmp(capteurs[i].type, "VIBR") == 0) {
+            if (valider_capteur(&capteurs[i]) == 0) {
+                validation_vibr = 0;
+                break;
+            }
+        }
+    }
+
+    // Vérification charge
+    for (int i = 0; i < n; i++) {
+        if (strcmp(capteurs[i].type, "CHARGE") == 0) {
+            if (valider_capteur(&capteurs[i]) == 0) {
+                validation_charge = 0;
+                break;
+            }
+        }
+    }
+
+    const char* conform_deform = conformite_cap(validation_deform);
+    const char* conform_vibr = conformite_cap(validation_vibr);
+    const char* conform_charge = conformite_cap(validation_charge);
+
+    printf("\nCONFORMITE EUROCODE 9\n");
+    printf("   Deformation vs limites           : %s\n", conform_deform);
+    printf("   Vibration vs resonance           : %s\n", conform_vibr);
+    printf("   Charge vs capacite               : %s\n", conform_charge);
+    printf("\n");
+
+    // Actions prioritaires
+    printf("ACTIONS PRIORITAIRES\n");
+    int action_number = 1;
+    for (int i = 0; i < nb_alr; i++) {
+        if (strlen(alertes[i].action) > 0) {
+            printf("%d. %s\n", action_number++, alertes[i].action);
+        }
+    }
+    if (action_number == 1) {
+        printf("AUCUNE ACTION PRIORITAIRE\n");
+    }
+
+    printf("\n======================================================\n");
+    printf("FIN DU RAPPORT\n");
+    printf("======================================================\n");
+
+
+    printf(" Rapport genere : %s\n", nom_fichier);
+}
 
 void alertes_jour(Capteur capteurs[], int n, Alerte alertes[], int nb_alertes) {
     time_t t = time(NULL); //on stocke le temps actuelle en seconde
