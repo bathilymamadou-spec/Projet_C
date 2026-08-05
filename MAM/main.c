@@ -86,7 +86,8 @@ int choix ;
                    for (int i = 0; i < NB_CAPTEURS; i++){
                        if (capteurs[i].valeur_mesuree!=DEFAULT){
                            if (!valider_capteur(&capteurs[i])){
-                               printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
+                               printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n",
+                                      capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
                             }
                             else{
                                 printf("Capteur %s -> %-17s: %s\n", capteurs[i].id, capteurs[i].nom, "validee");
@@ -132,11 +133,27 @@ int choix ;
                         }
                         else{
 
-                            printf("%-6s|%-16s %-8s %-10.2f %-8d %-10s\n", capteurs[i].id, capteurs[i].nom, capteurs[i].type, capteurs[i].valeur_mesuree, capteurs[i].etat, capteurs[i].remarque);
+                            printf("%-6s|%-16s %-8s %-10.2f %-8s %-10s\n",
+                                   capteurs[i].id, capteurs[i].nom, capteurs[i].type, capteurs[i].valeur_mesuree, etatToString(capteurs[i].etat), capteurs[i].remarque);
 
                         }
                     }
                 }
+                //Pointeur pointant le capteur le plus critoqie
+                Capteur *critique = recherche_capteur_critique(capteurs, NB_CAPTEURS);
+                //affichage du dit capteur
+                if (critique != NULL) {
+                    printf("Capteur le plus critique :\n");
+                    printf("  ID       : %s\n", critique->id);
+                    printf("  Nom      : %s\n", critique->nom);
+                    printf("  Type     : %s\n", critique->type);
+                    printf("  Etat     : %s\n", etatToString(critique->etat));
+                    printf("  Valeur   : %.2f\n", critique->valeur_mesuree);
+                    printf("  Remarque : %s\n", critique->remarque);
+                } else {
+                    printf("Aucun capteur critique trouve (tous OK).\n");
+                }
+                break;
                 printf("--------------------------------------------------------------------\n");
                 sleep(2);
                 break;
