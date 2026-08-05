@@ -120,6 +120,8 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
             }
         }
     }
+
+    //on receuille le date courante
     time_t t = time(NULL);
     struct tm *now = localtime(&t);
 
@@ -178,24 +180,116 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
     }
 
     // ---  DÉTECTION D'ASYMÉTRIE (Fissuration / Comportement anormal entre capteurs) ---
-    // Exemple : Comparaison entre C06 (Travée Centre-N, index 5) et C07 (Travée Centre-S, index 6)
-    int T_centre_n = 5; // C06
-    int T_centre_s = 6; // C07
+    // Déclaration des variables pour les déformations
+    float def_p_nord = -1.0, def_p_sud = -1.0;
+    float def_p_c1 = -1.0, def_p_c2 = -1.0;
+    float def_t_nord = -1.0, def_t_sud = -1.0;
+    float def_t_cn = -1.0, def_t_cs = -1.0;
 
-    if (T_centre_n < n && T_centre_s < n) {
-        float diff_asymetrie = fabsf(capteurs[T_centre_n].valeur_mesuree - capteurs[T_centre_s].valeur_mesuree);
+    int idx_p_nord = -1, idx_p_c1 = -1;
+    int idx_t_nord = -1, idx_t_cn = -1;
 
-        // Si l'écart entre les deux côtés de la travée dépasse 15 µm/m
-        if (diff_asymetrie > 15.0f) {
+    // --- DÉTECTION D'ASYMÉTRIE / DÉFORMATION (Piles et Travées) ---
+    // Récupération des valeurs de déformation
+    for (int i = 0; i < n; i++) {
+        if (strstr(capteurs[i].type, "DEFORM") != NULL) {
+            // Piles
+            if (strstr(capteurs[i].nom, "Pile Nord") != NULL) {
+                def_p_nord = capteurs[i].valeur_mesuree;
+                idx_p_nord = i;
+            }
+            else if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
+                def_p_sud = capteurs[i].valeur_mesuree;
+            }
+            else if (strstr(capteurs[i].nom, "Pile Centre 1") != NULL) {
+                def_p_c1 = capteurs[i].valeur_mesuree;
+                idx_p_c1 = i;
+            }
+            else if (strstr(capteurs[i].nom, "Pile Centre 2") != NULL) {
+                def_p_c2 = capteurs[i].valeur_mesuree;
+            }
+            // Travées
+            else if (strstr(capteurs[i].nom, "Travée Nord") != NULL) {
+                def_t_nord = capteurs[i].valeur_mesuree;
+                idx_t_nord = i;
+            }
+            else if (strstr(capteurs[i].nom, "Travée Sud") != NULL) {
+                def_t_sud = capteurs[i].valeur_mesuree;
+            }
+            else if (strstr(capteurs[i].nom, "Travée Centre-N") != NULL) {
+                def_t_cn = capteurs[i].valeur_mesuree;
+                idx_t_cn = i;
+            }
+            else if (strstr(capteurs[i].nom, "Travée Centre-S") != NULL) {
+                def_t_cs = capteurs[i].valeur_mesuree;
+            }
+        }
+    }
+
+    // 1. Asymétrie Piles de Déformation (Pile Nord vs Pile Sud)
+    if (def_p_nord != -1.0 && def_p_sud != -1.0) {
+        float diff = fabsf(def_p_nord - def_p_sud);
+        if (diff > 30.0f) {
             Alerte alr;
             strcpy(alr.horodatage, DATE_COURANTE);
-            alr.num_capteur = T_centre_n;
+            alr.num_capteur = idx_p_nord;
             strcpy(alr.type_alerte, "DEFORMATION");
             strcpy(alr.niveau, "ROUGE");
-            alr.valeur = diff_asymetrie;
+            alr.valeur = diff;
+            alr.seuil = 30.0f;
+            strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Pile Nord et Pile Sud (Deformation)");
+            alertes[*nb_alr] = alr;
+            (*nb_alr)++;
+        }
+    }
+
+    // 2. Asymétrie Piles de Déformation (Pile Centre 1 vs Pile Centre 2)
+    if (def_p_c1 != -1.0 && def_p_c2 != -1.0) {
+        float diff = fabsf(def_p_c1 - def_p_c2);
+        if (diff > 30.0f) {
+            Alerte alr;
+            strcpy(alr.horodatage, DATE_COURANTE);
+            alr.num_capteur = idx_p_c1;
+            strcpy(alr.type_alerte, "DEFORMATION");
+            strcpy(alr.niveau, "ROUGE");
+            alr.valeur = diff;
+            alr.seuil = 30.0f;
+            strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Pile Centre 1 et Pile Centre 2 (Deformation)");
+            alertes[*nb_alr] = alr;
+            (*nb_alr)++;
+        }
+    }
+
+    // 3. Asymétrie Travées de Déformation (Travée Nord vs Travée Sud)
+    if (def_t_nord != -1.0 && def_t_sud != -1.0) {
+        float diff = fabsf(def_t_nord - def_t_sud);
+        if (diff > 15.0f) {
+            Alerte alr;
+            strcpy(alr.horodatage, DATE_COURANTE);
+            alr.num_capteur = idx_t_nord;
+            strcpy(alr.type_alerte, "DEFORMATION");
+            strcpy(alr.niveau, "ROUGE");
+            alr.valeur = diff;
             alr.seuil = 15.0f;
-            strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Travee Centre-N et Centre-S (Risque fissuration)");
-            alertes[*nb_alr] = alr; //on l'insère dans un tableau d'alertes
+            strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Travee Nord et Travee Sud (Risque fissuration)");
+            alertes[*nb_alr] = alr;
+            (*nb_alr)++;
+        }
+    }
+
+    // 4. Asymétrie Travées de Déformation (Travée Centre-N vs Travée Centre-S)
+    if (def_t_cn != -1.0 && def_t_cs != -1.0) {
+        float diff = fabsf(def_t_cn - def_t_cs);
+        if (diff > 15.0f) {
+            Alerte alr;
+            strcpy(alr.horodatage, DATE_COURANTE);
+            alr.num_capteur = idx_t_cn;
+            strcpy(alr.type_alerte, "DEFORMATION");
+            strcpy(alr.niveau, "ROUGE");
+            alr.valeur = diff;
+            alr.seuil = 15.0f;
+            strcpy(alr.action, "ALERTE ASYMETRIE: Ecart important entre Travee Centre-N et Travee Centre-S (Risque fissuration)");
+            alertes[*nb_alr] = alr;
             (*nb_alr)++;
         }
     }
@@ -297,8 +391,7 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
             }
         }
     }
-    float charge_nord = -1.0, charge_sud = -1.0;
-    int idx_nord = -1;
+
     //on receuille le date courante
     time_t t = time(NULL);
     struct tm *now = localtime(&t);
@@ -336,35 +429,74 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                     (*nb_alr)++;
                 }
 
-    // ÉTAPE 2 : Détection du déséquilibre entre les piles (Analyse globale)
-    // Récupération des charges aux deux extrémités (Pile Nord vs Pile Sud)
-        if (strstr(capteurs[i].nom, "Pile Nord") != NULL) {
-            charge_nord = capteurs[i].valeur_mesuree;
-            idx_nord = i;
-        }
-        if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
-            charge_sud = capteurs[i].valeur_mesuree;
-        }
+
+    }
     }
 
-    // Calcul du déséquilibre entre les deux piles
-    if (charge_nord != -1.0 && charge_sud != -1.0) {
-        float ecart = charge_nord - charge_sud;
-        if (ecart < 0) ecart = -ecart; // Valeur absolue
-            if (ecart > 100.0){
-                Alerte al_des;
-                strcpy(al_des.horodatage, DATE_COURANTE);
-                al_des.num_capteur = idx_nord;
-                strcpy(al_des.type_alerte, "SURCHARGE");
-                strcpy(al_des.niveau, "JAUNE");
-                al_des.valeur = ecart;
-                al_des.seuil = 100.0;
-                strcpy(al_des.action, "Verification de charge entre Pile Nord et Pile Sud");
-                alertes[*nb_alr] = al_des;//on l'insère dans un tableau d'alertes
-                (*nb_alr)++;
+    // ÉTAPE 2 : Détection du déséquilibre entre piles
+    // Déclaration des variables initiales
+    float charge_nord = -1.0, charge_sud = -1.0;
+    float charge_c1 = -1.0, charge_c2 = -1.0;
+    int idx_nord = -1, idx_c1 = -1;
+
+    // Récupération des charges pour toutes les piles (Nord, Sud, Centre 1, Centre 2)
+    for (int i = 0; i < n; i++) {
+        if (strstr(capteurs[i].type, "CHARGE") != NULL) {
+            if (strstr(capteurs[i].nom, "Pile Nord") != NULL) {
+                charge_nord = capteurs[i].valeur_mesuree;
+                idx_nord = i;
+            }
+            else if (strstr(capteurs[i].nom, "Pile Sud") != NULL) {
+                charge_sud = capteurs[i].valeur_mesuree;
+            }
+            else if (strstr(capteurs[i].nom, "Pile Centre 1") != NULL) {
+                charge_c1 = capteurs[i].valeur_mesuree;
+                idx_c1 = i;
+            }
+            else if (strstr(capteurs[i].nom, "Pile Centre 2") != NULL) {
+                charge_c2 = capteurs[i].valeur_mesuree;
             }
         }
     }
+
+    // --- 2.1 : Calcul du déséquilibre entre Pile Nord et Pile Sud ---
+    if (charge_nord != -1.0 && charge_sud != -1.0) {
+        float ecart_ext = charge_nord - charge_sud;
+        if (ecart_ext < 0) ecart_ext = -ecart_ext; // Valeur absolue
+
+        if (ecart_ext > 100.0) {
+            Alerte al_des;
+            strcpy(al_des.horodatage, DATE_COURANTE);
+            al_des.num_capteur = idx_nord;
+            strcpy(al_des.type_alerte, "SURCHARGE");
+            strcpy(al_des.niveau, "JAUNE");
+            al_des.valeur = ecart_ext;
+            al_des.seuil = 100.0;
+            strcpy(al_des.action, "Verification de charge entre Pile Nord et Pile Sud");
+            alertes[*nb_alr] = al_des; // on l'insère dans un tableau d'alertes
+            (*nb_alr)++;
+        }
+    }
+
+    // --- 2.2 : Calcul du déséquilibre entre Pile Centre 1 et Pile Centre 2 ---
+    if (charge_c1 != -1.0 && charge_c2 != -1.0) {
+        float ecart_centre = charge_c1 - charge_c2;
+        if (ecart_centre < 0) ecart_centre = -ecart_centre; // Valeur absolue
+
+        if (ecart_centre > 100.0) {
+            Alerte al_des;
+            strcpy(al_des.horodatage, DATE_COURANTE);
+            al_des.num_capteur = idx_c1;
+            strcpy(al_des.type_alerte, "SURCHARGE");
+            strcpy(al_des.niveau, "JAUNE");
+            al_des.valeur = ecart_centre;
+            al_des.seuil = 100.0;
+            strcpy(al_des.action, "Verification de charge entre Pile Centre 1 et Pile Centre 2");
+            alertes[*nb_alr] = al_des; // on l'insère dans un tableau d'alertes
+            (*nb_alr)++;
+        }
+    }
+
 }
 
 
@@ -388,8 +520,6 @@ void detecter_anomalies(Capteur capteurs[], int n, Alerte alertes[], int *nb_alr
     detecter_anomalies_vibration(capteurs, NB_CAPTEURS, alertes, nb_alr);
     detecter_anomalies_deformation(capteurs, NB_CAPTEURS, alertes, nb_alr);
     detecter_anomalies_charge(capteurs, NB_CAPTEURS, alertes, nb_alr);
-
-
 }
 
 // Calcul du score de déformation pondéré
