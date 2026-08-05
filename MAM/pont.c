@@ -7,7 +7,19 @@
 #define NB_CAPTEURS 24
 #define NB_ALERTES_MAX 50
 
-
+//fonction convertissant l'énumaration en chaine
+const char* etatToString(Etat etat) {
+    switch(etat) {
+        case OK:
+            return "OK";
+        case JAUNE:
+            return "JAUNE";
+        case ROUGE:
+            return "ROUGE";
+        default:
+            return "INCONNU";
+    }
+}
 
 //On vérfie si les mesures du capteur sont valides
 int valider_capteur(Capteur *cap){
@@ -80,11 +92,11 @@ int valider_capteur(Capteur *cap){
         else{
             if (cap->valeur_mesuree>cap->seuil_alerte_r) {
                 cap->etat = ROUGE; // ROUGE
-                sprintf(cap->remarque, "Utilisation de %f de la capacité", div);
+                sprintf(cap->remarque, "Utilisation de %f de la capacité", (cap->valeur_mesuree/cap->valeur_nominale)*100);
             }
             else if (cap->valeur_mesuree>cap->seuil_alerte_j) {
                 cap->etat = JAUNE; // JAUNE
-                sprintf(cap->remarque, "Utilisation de %f de la capacite", div);
+                sprintf(cap->remarque, "Utilisation de %f de la capacite", (cap->valeur_mesuree/cap->valeur_nominale)*100);
             }
             else {
                 cap->etat = OK; // OK
@@ -113,10 +125,6 @@ void detecter_anomalies_deformation(Capteur capteurs[], int n, Alerte alertes[],
                 if (!valider_capteur(&capteurs[i])){
                     printf("[ERREUR] Capteur %s -> %s hors plages physiques! Valeur = %.2f\n", capteurs[i].id ,capteurs[i].nom, capteurs[i].valeur_mesuree);
                 }
-            }
-
-            else{
-                printf("Ce capteurs n'a pas encore de valeurs. Veuillez charger ses donnees des mesures.\n");
             }
         }
     }
@@ -290,10 +298,6 @@ void detecter_anomalies_charge(Capteur capteurs[], int n, Alerte alertes[], int 
                     continue;
                 }
 
-            }
-            else{
-                printf("%s n'a pas encore de valeurs. Veuillez charger ses donnees des mesures pour voir si elle contient une alerte.\n", capteurs[i].nom);
-                continue;
             }
         }
     }
