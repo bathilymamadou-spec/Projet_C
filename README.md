@@ -17,4 +17,4 @@ Projet_C/
 ## Compilation
 
 ```bash
-gcc MAM/main.c MAM/pont.c MAM/fichier.c MAM/texte_last.c -o MAM -lm
+gcc MAM/main.c MAM/pont.c -o MAM -lm
